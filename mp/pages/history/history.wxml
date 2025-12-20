@@ -1,0 +1,97 @@
+<wxs module="utils">
+  module.exports = {
+    getMealTypeName: function(mealType) {
+      if (mealType === 1) return '早餐';
+      if (mealType === 2) return '午餐';
+      if (mealType === 3) return '晚餐';
+      if (mealType === 4) return '夜宵';
+      return '美食';
+    }
+  }
+</wxs>
+
+<view class="container-history">
+  <!-- 自定义导航栏 -->
+  <view class="custom-nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-content" style="height: {{navBarHeight}}px;">
+      <view class="nav-left">
+        <view class="back-btn" bindtap="goBack">
+          <text class="back-icon">‹</text>
+        </view>
+        <text class="page-title">抽选历史</text>
+      </view>
+      <view class="nav-right">
+        <view class="nav-right-placeholder" style="width: {{menuButtonWidth}}px;"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 内容区域 -->
+  <scroll-view 
+    scroll-y 
+    class="content-scroll" 
+    enhanced="{{true}}" 
+    show-scrollbar="{{false}}"
+    refresher-enabled="{{true}}"
+    bindrefresherrefresh="onPullDownRefresh"
+  >
+    <!-- 加载中 -->
+    <view class="loading-container" wx:if="{{loading}}">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-container" wx:elif="{{isEmpty}}">
+      <text class="empty-icon">📭</text>
+      <text class="empty-title">暂无抽选记录</text>
+      <text class="empty-desc">快去首页抽选美食吧！</text>
+      <navigator url="/pages/index/index" class="empty-btn">
+        <text>去抽选</text>
+      </navigator>
+    </view>
+
+    <!-- 记录列表 -->
+    <view class="records-list" wx:else>
+      <view class="record-item" wx:for="{{records}}" wx:key="id">
+        <view class="record-card">
+          <!-- 食物图片 -->
+          <view class="food-image-wrapper">
+            <image 
+              class="food-image" 
+              src="{{item.food.image_url}}" 
+              mode="aspectFill"
+              binderror="onImageError"
+              data-index="{{index}}"
+            />
+            <view class="meal-type-badge">
+              <text>{{utils.getMealTypeName(item.food.meal_type)}}</text>
+            </view>
+          </view>
+          
+          <!-- 食物信息 -->
+          <view class="food-info">
+            <text class="food-name">{{item.food.name}}</text>
+            <view class="food-meta">
+              <view class="food-price">
+                <text class="price-symbol">¥</text>
+                <text class="price-value">{{item.food.price}}</text>
+              </view>
+              <view class="food-category" wx:if="{{item.food.category}}">
+                <text>{{item.food.category}}</text>
+              </view>
+            </view>
+            <text class="food-description" wx:if="{{item.food.description}}">{{item.food.description}}</text>
+            <view class="record-time">
+              <text class="time-icon">🕒</text>
+              <text class="time-text">{{item.formattedTime}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部安全区域 -->
+    <view class="safe-bottom"></view>
+  </scroll-view>
+</view>

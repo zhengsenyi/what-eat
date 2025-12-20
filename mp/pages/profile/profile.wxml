@@ -1,18 +1,14 @@
 <view class="container-profile">
-  <!-- 背景装饰 -->
-  <view class="bg-decoration">
-    <view class="bg-wave"></view>
-  </view>
-
-  <view class="main-card fade-in">
-    <!-- 顶部导航 -->
-    <view class="header">
-      <view class="header-left">
-        <text class="page-title">我的</text>
-      </view>
-      <view class="header-right">
-        <view class="settings-btn" bindtap="openSettings">
-          <text class="settings-icon">⚙️</text>
+  <view class="main-card">
+    <!-- 自定义导航栏 - 适配胶囊 -->
+    <view class="custom-nav" style="padding-top: {{statusBarHeight}}px;">
+      <view class="nav-content" style="height: {{navBarHeight}}px;">
+        <view class="nav-left">
+          <text class="page-title">我的</text>
+        </view>
+        <!-- 右侧区域 -->
+        <view class="nav-right">
+          <view class="nav-right-placeholder" style="width: {{menuButtonWidth}}px;"></view>
         </view>
       </view>
     </view>
@@ -43,34 +39,18 @@
         </view>
       </view>
 
-      <!-- 统计卡片 -->
-      <view class="stats-card">
-        <view class="stats-header">
-          <text class="stats-title">📊 本月数据</text>
-          <text class="stats-date">{{currentMonth}}</text>
+      <!-- 今日剩余次数卡片 -->
+      <view class="remaining-card">
+        <view class="remaining-info">
+          <text class="remaining-icon">🎁</text>
+          <view class="remaining-text">
+            <text class="remaining-label">今日剩余抽选次数</text>
+            <text class="remaining-hint">每日0点重置</text>
+          </view>
         </view>
-        <view class="stats-grid">
-          <view class="stat-item" bindtap="viewDrawHistory">
-            <text class="stat-value">{{stats.monthlyDraws || 0}}</text>
-            <text class="stat-label">本月抽选</text>
-            <view class="stat-trend up" wx:if="{{stats.drawTrend > 0}}">
-              <text class="trend-icon">↑</text>
-              <text class="trend-value">{{stats.drawTrend}}%</text>
-            </view>
-          </view>
-          <view class="stat-divider"></view>
-          <view class="stat-item" bindtap="viewNewTries">
-            <text class="stat-value">{{stats.newTries || 0}}</text>
-            <text class="stat-label">新尝试</text>
-            <view class="stat-badge">
-              <text class="badge-text">+{{stats.newTriesThisWeek || 0}}本周</text>
-            </view>
-          </view>
-          <view class="stat-divider"></view>
-          <view class="stat-item" bindtap="viewFavorites">
-            <text class="stat-value">{{stats.favorites || 0}}</text>
-            <text class="stat-label">收藏餐厅</text>
-          </view>
+        <view class="remaining-count">
+          <text class="count-number">{{userInfo.remainingTimes || 0}}</text>
+          <text class="count-unit">次</text>
         </view>
       </view>
 
@@ -78,16 +58,6 @@
       <view class="menu-section">
         <text class="menu-section-title">常用功能</text>
         <view class="menu-card">
-          <view class="menu-item" bindtap="goToFavorites">
-            <view class="menu-icon-wrapper favorites">
-              <text class="menu-icon">❤️</text>
-            </view>
-            <view class="menu-content">
-              <text class="menu-text">收藏餐厅</text>
-              <text class="menu-desc">{{stats.favorites || 0}}家餐厅</text>
-            </view>
-            <text class="menu-arrow">›</text>
-          </view>
           <view class="menu-item" bindtap="goToHistory">
             <view class="menu-icon-wrapper history">
               <text class="menu-icon">🕒</text>
@@ -95,16 +65,6 @@
             <view class="menu-content">
               <text class="menu-text">抽选历史</text>
               <text class="menu-desc">查看所有记录</text>
-            </view>
-            <text class="menu-arrow">›</text>
-          </view>
-          <view class="menu-item" bindtap="goToPreferences">
-            <view class="menu-icon-wrapper preferences">
-              <text class="menu-icon">🎯</text>
-            </view>
-            <view class="menu-content">
-              <text class="menu-text">偏好设置</text>
-              <text class="menu-desc">口味、预算、距离</text>
             </view>
             <text class="menu-arrow">›</text>
           </view>

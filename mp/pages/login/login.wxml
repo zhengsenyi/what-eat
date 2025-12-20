@@ -31,44 +31,68 @@
           <text class="decoration-icon">🍜</text>
           <view class="decoration-line"></view>
         </view>
-        <text class="subtitle">解决你的"今天吃什么"难题</text>
-        <text class="subtitle-secondary">让美食选择变得有趣又简单</text>
+        <text class="subtitle">{{isRegisterMode ? '创建新账号' : '欢迎回来'}}</text>
       </view>
       
-      <!-- 特性展示 -->
-      <view class="features">
-        <view class="feature-item">
-          <text class="feature-icon">🎲</text>
-          <text class="feature-text">随机惊喜</text>
+      <!-- 输入表单 -->
+      <view class="form-section">
+        <view class="input-group">
+          <text class="input-icon">👤</text>
+          <input 
+            class="input-field" 
+            type="text" 
+            placeholder="请输入用户名（至少3个字符）" 
+            value="{{username}}"
+            bindinput="onUsernameInput"
+            maxlength="50"
+          />
         </view>
-        <view class="feature-item">
-          <text class="feature-icon">📍</text>
-          <text class="feature-text">附近美食</text>
+        <view class="input-group">
+          <text class="input-icon">🔒</text>
+          <input 
+            class="input-field" 
+            type="password" 
+            placeholder="请输入密码（至少6个字符）" 
+            value="{{password}}"
+            bindinput="onPasswordInput"
+            maxlength="100"
+          />
         </view>
-        <view class="feature-item">
-          <text class="feature-icon">💰</text>
-          <text class="feature-text">预算可控</text>
+        <view class="input-group" wx:if="{{isRegisterMode}}">
+          <text class="input-icon">🔒</text>
+          <input 
+            class="input-field" 
+            type="password" 
+            placeholder="请确认密码" 
+            value="{{confirmPassword}}"
+            bindinput="onConfirmPasswordInput"
+            maxlength="100"
+          />
         </view>
       </view>
       
-      <!-- 登录按钮区域 -->
+      <!-- 登录/注册按钮 -->
       <view class="actions">
-        <button class="btn-wechat" bindtap="onLogin" hover-class="btn-wechat-hover">
-          <image class="btn-icon" src="../../static/icons/wechat.png" mode="aspectFit" />
-          <text>微信一键登录</text>
+        <button 
+          class="btn-primary" 
+          bindtap="{{isRegisterMode ? 'onRegister' : 'onLogin'}}" 
+          disabled="{{isLoading}}"
+          hover-class="btn-primary-hover"
+        >
+          <text class="btn-text">{{isLoading ? '请稍候...' : (isRegisterMode ? '注册' : '登录')}}</text>
         </button>
-        <button class="btn-phone" hover-class="btn-phone-hover">
-          <text class="btn-phone-icon">📱</text>
-          <text>手机号登录</text>
-        </button>
+        
+        <view class="switch-mode" bindtap="toggleMode">
+          <text class="switch-text">{{isRegisterMode ? '已有账号？去登录' : '没有账号？去注册'}}</text>
+        </view>
       </view>
       
       <!-- 协议提示 -->
       <view class="agreement">
         <text class="agreement-text">登录即表示同意</text>
-        <text class="agreement-link">《用户协议》</text>
+        <text class="agreement-link" bindtap="onViewAgreement">《用户协议》</text>
         <text class="agreement-text">和</text>
-        <text class="agreement-link">《隐私政策》</text>
+        <text class="agreement-link" bindtap="onViewPrivacy">《隐私政策》</text>
       </view>
     </view>
   </view>

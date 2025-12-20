@@ -1,33 +1,130 @@
-<view class="container-index">
-  <view class="main-card">
-    <!-- 自定义导航栏 - 适配胶囊 -->
-    <view class="custom-nav" style="padding-top: {{statusBarHeight}}px;">
-      <view class="nav-content" style="height: {{navBarHeight}}px;">
-        <view class="nav-left">
-          <text class="app-logo">🍱</text>
-          <text class="app-title">吃啥盲盒</text>
-        </view>
-        <navigator url="/pages/profile/profile" hover-class="none" class="avatar-btn">
-          <view class="avatar-circle">
-            <text class="avatar-icon">👤</text>
+<wxs module="utils">
+  module.exports = {
+    getMealTypeName: function(mealType) {
+      if (mealType === 1) return '早餐';
+      if (mealType === 2) return '午餐';
+      if (mealType === 3) return '晚餐';
+      if (mealType === 4) return '夜宵';
+      return '美食';
+    }
+  }
+</wxs>
+
+<view class="container-index {{showResult ? 'no-scroll' : ''}}">
+  <!-- 自定义导航栏 - 适配胶囊 -->
+  <view class="custom-nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-content" style="height: {{navBarHeight}}px;">
+      <view class="nav-left">
+        <text class="app-logo">🍱</text>
+        <text class="app-title">吃啥盲盒</text>
+      </view>
+      <!-- 右侧区域：我的入口 + 胶囊占位 -->
+      <view class="nav-right">
+        <!-- 我的页面入口，紧挨胶囊左侧 -->
+        <navigator url="/pages/profile/profile" hover-class="none" class="profile-entry">
+          <view class="profile-btn" style="height: {{menuButtonHeight}}px; line-height: {{menuButtonHeight}}px;">
+            <text class="profile-icon">👤</text>
           </view>
         </navigator>
+        <!-- 胶囊占位 -->
+        <view class="nav-right-placeholder" style="width: {{menuButtonWidth}}px;"></view>
       </view>
     </view>
-    
-    <scroll-view scroll-y class="content-scroll" enhanced="{{true}}" show-scrollbar="{{false}}">
-      <!-- 欢迎区域 -->
-      <view class="hero-section">
-        <view class="hero-badge">
-          <text class="badge-icon">✨</text>
-          <text class="badge-text">今日推荐</text>
-        </view>
-        <text class="hero-title">今天吃啥？</text>
-        <text class="hero-subtitle">摇一摇盲盒，让惊喜来决定！</text>
-      </view>
+  </view>
 
+  <!-- 主内容区域 -->
+  <view class="main-content">
+    <!-- 盲盒区域 - 占满剩余空间并居中 -->
+    <view class="blindbox-area">
+      <view class="blindbox-container">
+        <!-- 未抽奖状态：显示盲盒 -->
+        <view class="blindbox-wrapper" wx:if="{{!showResult}}">
+          <view class="blindbox {{isShaking ? 'shake' : ''}} {{isPressed ? 'pressed' : ''}} {{isOpening ? 'opening' : ''}}" 
+                bindtap="startDraw"
+                bindtouchstart="onBoxTouchStart"
+                bindtouchend="onBoxTouchEnd">
+            <!-- 光晕效果 -->
+            <view class="blindbox-glow {{isShaking ? 'glow-active' : ''}}"></view>
+            <!-- 粒子效果 -->
+            <view class="particles" wx:if="{{isShaking}}">
+              <view class="particle particle-1"></view>
+              <view class="particle particle-2"></view>
+              <view class="particle particle-3"></view>
+              <view class="particle particle-4"></view>
+              <view class="particle particle-5"></view>
+              <view class="particle particle-6"></view>
+            </view>
+            <!-- 盲盒主体 -->
+            <view class="blindbox-inner">
+              <view class="blindbox-lid {{isOpening ? 'lid-open' : ''}}">
+                <view class="lid-ribbon"></view>
+              </view>
+              <view class="blindbox-body">
+                <view class="blindbox-face">
+                  <text class="gift-icon">🎁</text>
+                </view>
+              </view>
+            </view>
+            <!-- 阴影 -->
+            <view class="blindbox-shadow {{isShaking ? 'shadow-active' : ''}}"></view>
+          </view>
+          <text class="blindbox-hint">{{isShaking ? '正在抽选中...' : '点击盲盒开始抽选'}}</text>
+          <view class="remaining-times">
+            <text class="times-label">今日剩余</text>
+            <text class="times-value">{{remainingTimes}}</text>
+            <text class="times-unit">次</text>
+          </view>
+        </view>
+
+        <!-- 抽奖结果展示 -->
+        <view class="result-wrapper" wx:if="{{showResult}}" catchtouchmove="preventTouchMove">
+          <view class="result-card {{resultAnimating ? 'result-enter' : ''}}">
+            <!-- 食物图片 -->
+            <view class="food-image-container">
+              <image 
+                class="food-image" 
+                src="{{foodResult.image_url}}" 
+                mode="aspectFill"
+                binderror="onImageError"
+              />
+              <view class="food-badge">
+                <text class="badge-text">{{utils.getMealTypeName(foodResult.meal_type)}}</text>
+              </view>
+            </view>
+            <!-- 食物信息 -->
+            <view class="food-info">
+              <text class="food-name">{{foodResult.name}}</text>
+              <view class="food-meta">
+                <view class="food-price">
+                  <text class="price-symbol">¥</text>
+                  <text class="price-value">{{foodResult.price}}</text>
+                </view>
+                <view class="food-category" wx:if="{{foodResult.category}}">
+                  <text class="category-text">{{foodResult.category}}</text>
+                </view>
+              </view>
+              <text class="food-description" wx:if="{{foodResult.description}}">{{foodResult.description}}</text>
+            </view>
+            <!-- 操作按钮 -->
+            <view class="result-actions">
+              <button class="btn-retry" bindtap="resetDraw">
+                <text class="btn-icon">🔄</text>
+                <text>再抽一次</text>
+              </button>
+              <button class="btn-accept" bindtap="acceptResult">
+                <text class="btn-icon">✅</text>
+                <text>就吃这个</text>
+              </button>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部设置区域 -->
+    <view class="bottom-settings">
       <!-- 场景选择 -->
-      <view class="section">
+      <view class="setting-section">
         <view class="section-header">
           <text class="section-title">🍽️ 用餐场景</text>
         </view>
@@ -45,8 +142,8 @@
         </view>
       </view>
 
-      <!-- 预算范围 - 双滑块 -->
-      <view class="section">
+      <!-- 预算范围 -->
+      <view class="setting-section">
         <view class="section-header">
           <text class="section-title">💰 预算范围</text>
           <view class="budget-badge">
@@ -82,35 +179,13 @@
         </view>
       </view>
 
-      <!-- 盲盒区域 -->
-      <view class="blindbox-section">
-        <view class="blindbox-wrapper">
-          <view class="blindbox {{isShaking ? 'shake' : ''}} {{isPressed ? 'pressed' : ''}}" 
-                bindtap="startDraw"
-                bindtouchstart="onBoxTouchStart"
-                bindtouchend="onBoxTouchEnd">
-            <view class="blindbox-glow"></view>
-            <view class="blindbox-inner">
-              <view class="blindbox-face">
-                <text class="gift-icon">🎁</text>
-              </view>
-            </view>
-            <view class="blindbox-shadow"></view>
-          </view>
-          <text class="blindbox-hint">点击盲盒开始抽选</text>
-        </view>
+      <!-- 开始抽选按钮 -->
+      <view class="draw-button-container">
+        <button class="btn-draw {{isShaking ? 'disabled' : ''}}" bindtap="startDraw" disabled="{{isShaking}}">
+          <text class="btn-icon">🎲</text>
+          <text class="btn-text">{{isShaking ? '抽选中...' : '开始抽选'}}</text>
+        </button>
       </view>
-
-      <!-- 底部占位 -->
-      <view class="bottom-placeholder"></view>
-    </scroll-view>
-
-    <!-- 底部固定按钮 -->
-    <view class="bottom-fixed">
-      <button class="btn-draw {{isShaking ? 'disabled' : ''}}" bindtap="startDraw" disabled="{{isShaking}}">
-        <text class="btn-icon">🎲</text>
-        <text class="btn-text">{{isShaking ? '抽选中...' : '开始抽选'}}</text>
-      </button>
     </view>
   </view>
 </view>

@@ -1,24 +1,21 @@
 <view class="container-result">
-  <!-- 背景装饰 -->
-  <view class="bg-decoration">
-    <view class="bg-confetti">
-      <text class="confetti confetti-1">🎉</text>
-      <text class="confetti confetti-2">✨</text>
-      <text class="confetti confetti-3">🎊</text>
-      <text class="confetti confetti-4">⭐</text>
-      <text class="confetti confetti-5">🎉</text>
-    </view>
-  </view>
-
-  <view class="main-card scale-in">
-    <!-- 顶部导航 -->
-    <view class="header">
-      <view class="back-btn" bindtap="goBack">
-        <text class="back-icon">←</text>
-      </view>
-      <text class="page-title">抽选结果</text>
-      <view class="share-btn" bindtap="onShare">
-        <text class="share-icon">📤</text>
+  <view class="main-card">
+    <!-- 自定义导航栏 - 适配胶囊 -->
+    <view class="custom-nav" style="padding-top: {{statusBarHeight}}px;">
+      <view class="nav-content" style="height: {{navBarHeight}}px;">
+        <view class="nav-left">
+          <view class="back-btn" bindtap="goBack">
+            <text class="back-icon">←</text>
+          </view>
+          <text class="page-title">抽选结果</text>
+        </view>
+        <!-- 右侧区域 -->
+        <view class="nav-right">
+          <view class="share-btn" bindtap="onShare">
+            <text class="share-icon">📤</text>
+          </view>
+          <view class="nav-right-placeholder" style="width: {{menuButtonWidth}}px;"></view>
+        </view>
       </view>
     </view>
     
@@ -30,17 +27,22 @@
           <text class="badge-text">抽选成功</text>
         </view>
         <text class="result-title">为你推荐</text>
+        <text class="remaining-text" wx:if="{{remainingTimes >= 0}}">今日剩余 {{remainingTimes}} 次</text>
       </view>
 
       <!-- 主结果卡片 -->
       <view class="result-card">
         <!-- 图片区域 -->
         <view class="card-image-wrapper">
-          <image class="card-image" src="{{result.image}}" mode="aspectFill" lazy-load="{{true}}"></image>
+          <image 
+            class="card-image" 
+            src="{{result.image_url || '/static/icons/gift.png'}}" 
+            mode="aspectFill" 
+            lazy-load="{{true}}"
+          ></image>
           <view class="image-overlay">
-            <view class="rating-badge">
-              <text class="rating-star">⭐</text>
-              <text class="rating-value">{{result.rating}}</text>
+            <view class="category-badge">
+              <text class="category-text">{{result.category}}</text>
             </view>
           </view>
           <view class="favorite-btn {{isFavorite ? 'active' : ''}}" bindtap="toggleFavorite">
@@ -53,37 +55,17 @@
           <view class="content-header">
             <view class="dish-info">
               <text class="dish-name">{{result.name}}</text>
-              <text class="restaurant-name">📍 {{result.restaurant}}</text>
+              <text class="dish-category">🏷️ {{result.category}}</text>
             </view>
-            <view class="price-tag">
+            <view class="price-tag" wx:if="{{result.price}}">
               <text class="price-currency">¥</text>
               <text class="price-value">{{result.price}}</text>
-              <text class="price-unit">/份</text>
-            </view>
-          </view>
-
-          <!-- 标签 -->
-          <view class="tags-wrapper">
-            <view class="tag tag-primary" wx:for="{{result.tags}}" wx:key="*this" wx:if="{{index < 2}}">
-              <text>{{item}}</text>
-            </view>
-            <view class="tag tag-secondary" wx:for="{{result.tags}}" wx:key="*this" wx:if="{{index >= 2}}">
-              <text>{{item}}</text>
             </view>
           </view>
 
           <!-- 描述 -->
-          <view class="description-box">
+          <view class="description-box" wx:if="{{result.description}}">
             <text class="description-text">{{result.description}}</text>
-          </view>
-
-          <!-- 用户评价 -->
-          <view class="review-card">
-            <view class="review-header">
-              <text class="review-icon">💬</text>
-              <text class="review-label">用户评价</text>
-            </view>
-            <text class="review-text">"{{result.review}}"</text>
           </view>
         </view>
       </view>
@@ -118,42 +100,16 @@
         </view>
       </view>
 
-      <!-- 相似推荐 -->
-      <view class="similar-section" wx:if="{{similarItems.length > 0}}">
-        <view class="section-header">
-          <text class="section-title">🍽️ 相似推荐</text>
-          <text class="section-subtitle">你可能也喜欢</text>
-        </view>
-        <scroll-view scroll-x class="similar-scroll" enhanced="{{true}}" show-scrollbar="{{false}}">
-          <view class="similar-list">
-            <view class="similar-card" wx:for="{{similarItems}}" wx:key="id" bindtap="selectSimilar" data-item="{{item}}">
-              <view class="similar-image-wrapper">
-                <image class="similar-image" src="{{item.image}}" mode="aspectFill" lazy-load="{{true}}"></image>
-                <view class="similar-rating">
-                  <text class="rating-star-sm">⭐</text>
-                  <text class="rating-value-sm">{{item.rating}}</text>
-                </view>
-              </view>
-              <view class="similar-info">
-                <text class="similar-name">{{item.name}}</text>
-                <text class="similar-restaurant">{{item.restaurant}}</text>
-                <text class="similar-price">¥{{item.price}}</text>
-              </view>
-            </view>
-          </view>
-        </scroll-view>
-      </view>
-
-      <!-- 底部按钮 -->
-      <view class="bottom-action">
-        <button class="btn-confirm" bindtap="confirmChoice">
-          <text class="btn-icon">✅</text>
-          <text class="btn-text">就吃这个！</text>
-        </button>
-      </view>
-
-      <!-- 底部安全区域 -->
-      <view class="safe-bottom"></view>
+      <!-- 底部占位 -->
+      <view class="bottom-placeholder"></view>
     </scroll-view>
+
+    <!-- 底部固定按钮 -->
+    <view class="bottom-fixed">
+      <button class="btn-confirm" bindtap="confirmChoice">
+        <text class="btn-icon">✅</text>
+        <text class="btn-text">就吃这个！</text>
+      </button>
+    </view>
   </view>
 </view>

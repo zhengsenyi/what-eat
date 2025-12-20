@@ -1,92 +1,110 @@
 // pages/profile/profile.js
+const { userApi } = require('../../utils/api');
+
 Page({
   data: {
+    // 导航栏相关
+    statusBarHeight: 20,
+    navBarHeight: 44,
+    menuButtonWidth: 87,
+    // 用户信息
     userInfo: {
+      id: 0,
+      username: '',
       nickName: '美食探索家',
       avatarText: '👤',
-      level: '黄金会员'
+      level: '黄金会员',
+      remainingTimes: 3
     },
-    stats: {
-      monthlyDraws: 12,
-      newTries: 7,
-      newTriesThisWeek: 3,
-      favorites: 5,
-      drawTrend: 15
-    },
-    currentMonth: '',
     version: '1.0.0',
     cacheSize: '计算中...'
   },
 
   onLoad() {
+    // 获取导航栏信息
+    this.getNavBarInfo();
     this.loadUserInfo();
-    this.loadStats();
-    this.setCurrentMonth();
     this.calculateCacheSize();
   },
 
   onShow() {
     // 每次显示页面时刷新数据
-    this.loadStats();
+    this.loadUserInfo();
     this.calculateCacheSize();
   },
 
-  // 加载用户信息
-  loadUserInfo() {
-    const userInfo = wx.getStorageSync('userInfo');
-    if (userInfo) {
+  // 获取导航栏信息
+  getNavBarInfo() {
+    try {
+      const systemInfo = wx.getSystemInfoSync();
+      const statusBarHeight = systemInfo.statusBarHeight || 20;
+      const menuButtonInfo = wx.getMenuButtonBoundingClientRect();
+      const navBarHeight = (menuButtonInfo.top - statusBarHeight) * 2 + menuButtonInfo.height;
+      const menuButtonWidth = systemInfo.windowWidth - menuButtonInfo.left;
+      
       this.setData({
-        userInfo: {
-          nickName: userInfo.nickName || '美食探索家',
-          avatarText: userInfo.avatarText || '👤',
-          level: userInfo.level || '黄金会员'
-        }
+        statusBarHeight,
+        navBarHeight,
+        menuButtonWidth
       });
+    } catch (e) {
+      console.error('获取导航栏信息失败', e);
     }
   },
 
-  // 加载统计数据
-  loadStats() {
-    const stats = wx.getStorageSync('userStats') || {};
-    const favorites = wx.getStorageSync('favorites') || [];
-    const history = wx.getStorageSync('drawHistory') || [];
-    
-    // 计算本月抽选次数
-    const now = new Date();
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    const monthlyDraws = history.filter(item => {
-      const drawDate = new Date(item.drawTime);
-      return drawDate >= monthStart;
-    }).length;
+  // 加载用户信息
+  async loadUserInfo() {
+    try {
+      const res = await userApi.getUserInfo();
+      
+      // 后端返回格式：{code: 0, data: {id, username, created_at, today_remaining_times}}
+      if (res && res.code === 0 && res.data) {
+        const userInfo = res.data;
+        const localUserInfo = wx.getStorageSync('userInfo') || {};
+        
+        this.setData({
+          userInfo: {
+            id: userInfo.id,
+            username: userInfo.username,
+            nickName: localUserInfo.nickName || userInfo.username,
+            avatarText: localUserInfo.avatarText || '👤',
+            level: '黄金会员',
+            remainingTimes: userInfo.today_remaining_times
+          }
+        });
 
-    // 计算新尝试（去重的餐厅数量）
-    const uniqueRestaurants = new Set(history.map(item => item.restaurant || item.name));
-    
-    this.setData({
-      stats: {
-        monthlyDraws: monthlyDraws || stats.totalDraws || 12,
-        newTries: uniqueRestaurants.size || 7,
-        newTriesThisWeek: 3,
-        favorites: favorites.length || stats.favoriteCount || 5,
-        drawTrend: 15
+        // 更新本地存储
+        wx.setStorageSync('userInfo', {
+          ...localUserInfo,
+          id: userInfo.id,
+          username: userInfo.username,
+          remainingTimes: userInfo.today_remaining_times
+        });
       }
-    });
-  },
-
-  // 设置当前月份
-  setCurrentMonth() {
-    const now = new Date();
-    const month = now.getMonth() + 1;
-    this.setData({
-      currentMonth: `${now.getFullYear()}年${month}月`
-    });
+    } catch (e) {
+      console.error('获取用户信息失败', e);
+      // 使用本地存储的信息
+      const localUserInfo = wx.getStorageSync('userInfo');
+      if (localUserInfo) {
+        this.setData({
+          userInfo: {
+            id: localUserInfo.id || 0,
+            username: localUserInfo.username || '',
+            nickName: localUserInfo.nickName || '美食探索家',
+            avatarText: localUserInfo.avatarText || '👤',
+            level: '黄金会员',
+            remainingTimes: localUserInfo.remainingTimes || 0
+          }
+        });
+      }
+    }
   },
 
   // 计算缓存大小
   calculateCacheSize() {
     try {
       const res = wx.getStorageInfoSync();
-      const usedSize = res.currentSize; // KB
+      const usedSize = res.currentSize;
       let sizeText = '';
       
       if (usedSize < 1024) {
@@ -99,14 +117,6 @@ Page({
     } catch (e) {
       this.setData({ cacheSize: '未知' });
     }
-  },
-
-  // 打开设置
-  openSettings() {
-    wx.showToast({
-      title: '功能开发中',
-      icon: 'none'
-    });
   },
 
   // 编辑个人资料
@@ -170,48 +180,10 @@ Page({
     });
   },
 
-  // 查看抽选历史
-  viewDrawHistory() {
-    wx.showToast({
-      title: '功能开发中',
-      icon: 'none'
-    });
-  },
-
-  // 查看新尝试
-  viewNewTries() {
-    wx.showToast({
-      title: '功能开发中',
-      icon: 'none'
-    });
-  },
-
-  // 查看收藏
-  viewFavorites() {
-    this.goToFavorites();
-  },
-
-  // 跳转到收藏页
-  goToFavorites() {
-    wx.showToast({
-      title: '功能开发中',
-      icon: 'none'
-    });
-  },
-
   // 跳转到历史页
   goToHistory() {
-    wx.showToast({
-      title: '功能开发中',
-      icon: 'none'
-    });
-  },
-
-  // 跳转到偏好设置
-  goToPreferences() {
-    wx.showToast({
-      title: '功能开发中',
-      icon: 'none'
+    wx.navigateTo({
+      url: '/pages/history/history'
     });
   },
 
@@ -239,24 +211,23 @@ Page({
   clearCache() {
     wx.showModal({
       title: '清除缓存',
-      content: '确定要清除所有缓存数据吗？这将清除历史记录和收藏，但不会影响登录状态。',
+      content: '确定要清除所有缓存数据吗？这将清除本地历史记录，但不会影响登录状态。',
       confirmText: '确定清除',
       confirmColor: '#ef4444',
       success: (res) => {
         if (res.confirm) {
-          // 保留用户信息
+          const token = wx.getStorageSync('token');
           const userInfo = wx.getStorageSync('userInfo');
           
-          // 清除所有存储
           wx.clearStorageSync();
           
-          // 恢复用户信息
+          if (token) {
+            wx.setStorageSync('token', token);
+          }
           if (userInfo) {
             wx.setStorageSync('userInfo', userInfo);
           }
           
-          // 刷新数据
-          this.loadStats();
           this.calculateCacheSize();
           
           wx.showToast({
@@ -277,7 +248,7 @@ Page({
       confirmColor: '#ef4444',
       success: (res) => {
         if (res.confirm) {
-          // 清除用户信息
+          wx.removeStorageSync('token');
           wx.removeStorageSync('userInfo');
           
           wx.showToast({
@@ -286,7 +257,6 @@ Page({
             duration: 1500
           });
           
-          // 跳转到登录页
           setTimeout(() => {
             wx.reLaunch({
               url: '/pages/login/login'

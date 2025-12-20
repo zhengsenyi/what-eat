@@ -3,7 +3,8 @@
     "pages/login/login",
     "pages/index/index",
     "pages/result/result",
-    "pages/profile/profile"
+    "pages/profile/profile",
+    "pages/history/history"
   ],
   "window": {
     "backgroundTextStyle": "dark",
