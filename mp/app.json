@@ -6,6 +6,7 @@
     "pages/profile/profile",
     "pages/history/history"
   ],
+  "cloud": true,
   "window": {
     "backgroundTextStyle": "dark",
     "navigationBarBackgroundColor": "#f0fdf4",

@@ -1,5 +1,6 @@
 {
   "description": "Eat What Blind Box Mini Program",
+  "cloudfunctionRoot": "cloudfunctions/",
   "packOptions": {
     "ignore": [],
     "include": []
@@ -50,7 +51,7 @@
   },
   "compileType": "miniprogram",
   "libVersion": "2.19.4",
-  "appid": "wxcba845d4f6aaf651",
+  "appid": "wx2f647a16ea239bbc",
   "projectname": "what-eat-mp",
   "isGameTourist": false,
   "condition": {
