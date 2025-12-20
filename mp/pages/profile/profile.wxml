@@ -1,0 +1,169 @@
+<view class="container-profile">
+  <!-- 背景装饰 -->
+  <view class="bg-decoration">
+    <view class="bg-wave"></view>
+  </view>
+
+  <view class="main-card fade-in">
+    <!-- 顶部导航 -->
+    <view class="header">
+      <view class="header-left">
+        <text class="page-title">我的</text>
+      </view>
+      <view class="header-right">
+        <view class="settings-btn" bindtap="openSettings">
+          <text class="settings-icon">⚙️</text>
+        </view>
+      </view>
+    </view>
+    
+    <scroll-view scroll-y class="content-scroll" enhanced="{{true}}" show-scrollbar="{{false}}">
+      <!-- 用户信息卡片 -->
+      <view class="user-card">
+        <view class="user-info">
+          <view class="avatar-wrapper">
+            <view class="avatar-container">
+              <text class="avatar-icon">{{userInfo.avatarText || '👤'}}</text>
+            </view>
+            <view class="avatar-badge">
+              <text class="badge-icon">👑</text>
+            </view>
+          </view>
+          <view class="user-details">
+            <text class="user-name">{{userInfo.nickName || '美食探索家'}}</text>
+            <view class="level-badge">
+              <text class="level-icon">⭐</text>
+              <text class="level-text">{{userInfo.level || '黄金会员'}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="edit-btn" bindtap="editProfile">
+          <text class="edit-text">编辑</text>
+          <text class="edit-arrow">›</text>
+        </view>
+      </view>
+
+      <!-- 统计卡片 -->
+      <view class="stats-card">
+        <view class="stats-header">
+          <text class="stats-title">📊 本月数据</text>
+          <text class="stats-date">{{currentMonth}}</text>
+        </view>
+        <view class="stats-grid">
+          <view class="stat-item" bindtap="viewDrawHistory">
+            <text class="stat-value">{{stats.monthlyDraws || 0}}</text>
+            <text class="stat-label">本月抽选</text>
+            <view class="stat-trend up" wx:if="{{stats.drawTrend > 0}}">
+              <text class="trend-icon">↑</text>
+              <text class="trend-value">{{stats.drawTrend}}%</text>
+            </view>
+          </view>
+          <view class="stat-divider"></view>
+          <view class="stat-item" bindtap="viewNewTries">
+            <text class="stat-value">{{stats.newTries || 0}}</text>
+            <text class="stat-label">新尝试</text>
+            <view class="stat-badge">
+              <text class="badge-text">+{{stats.newTriesThisWeek || 0}}本周</text>
+            </view>
+          </view>
+          <view class="stat-divider"></view>
+          <view class="stat-item" bindtap="viewFavorites">
+            <text class="stat-value">{{stats.favorites || 0}}</text>
+            <text class="stat-label">收藏餐厅</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 功能菜单 -->
+      <view class="menu-section">
+        <text class="menu-section-title">常用功能</text>
+        <view class="menu-card">
+          <view class="menu-item" bindtap="goToFavorites">
+            <view class="menu-icon-wrapper favorites">
+              <text class="menu-icon">❤️</text>
+            </view>
+            <view class="menu-content">
+              <text class="menu-text">收藏餐厅</text>
+              <text class="menu-desc">{{stats.favorites || 0}}家餐厅</text>
+            </view>
+            <text class="menu-arrow">›</text>
+          </view>
+          <view class="menu-item" bindtap="goToHistory">
+            <view class="menu-icon-wrapper history">
+              <text class="menu-icon">🕒</text>
+            </view>
+            <view class="menu-content">
+              <text class="menu-text">抽选历史</text>
+              <text class="menu-desc">查看所有记录</text>
+            </view>
+            <text class="menu-arrow">›</text>
+          </view>
+          <view class="menu-item" bindtap="goToPreferences">
+            <view class="menu-icon-wrapper preferences">
+              <text class="menu-icon">🎯</text>
+            </view>
+            <view class="menu-content">
+              <text class="menu-text">偏好设置</text>
+              <text class="menu-desc">口味、预算、距离</text>
+            </view>
+            <text class="menu-arrow">›</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 系统菜单 -->
+      <view class="menu-section">
+        <text class="menu-section-title">更多</text>
+        <view class="menu-card">
+          <view class="menu-item" bindtap="goToFeedback">
+            <view class="menu-icon-wrapper feedback">
+              <text class="menu-icon">💬</text>
+            </view>
+            <view class="menu-content">
+              <text class="menu-text">意见反馈</text>
+              <text class="menu-desc">帮助我们改进</text>
+            </view>
+            <text class="menu-arrow">›</text>
+          </view>
+          <view class="menu-item" bindtap="goToAbout">
+            <view class="menu-icon-wrapper about">
+              <text class="menu-icon">ℹ️</text>
+            </view>
+            <view class="menu-content">
+              <text class="menu-text">关于我们</text>
+              <text class="menu-desc">版本 {{version}}</text>
+            </view>
+            <text class="menu-arrow">›</text>
+          </view>
+          <view class="menu-item" bindtap="clearCache">
+            <view class="menu-icon-wrapper cache">
+              <text class="menu-icon">🗑️</text>
+            </view>
+            <view class="menu-content">
+              <text class="menu-text">清除缓存</text>
+              <text class="menu-desc">{{cacheSize}}</text>
+            </view>
+            <text class="menu-arrow">›</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 退出登录按钮 -->
+      <view class="logout-section">
+        <button class="btn-logout" bindtap="logout">
+          <text class="logout-icon">🚪</text>
+          <text class="logout-text">退出登录</text>
+        </button>
+      </view>
+
+      <!-- 底部版权信息 -->
+      <view class="footer">
+        <text class="footer-text">吃啥盲盒 © 2024</text>
+        <text class="footer-slogan">让美食选择变得有趣</text>
+      </view>
+
+      <!-- 底部安全区域 -->
+      <view class="safe-bottom"></view>
+    </scroll-view>
+  </view>
+</view>

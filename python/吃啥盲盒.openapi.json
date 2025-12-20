@@ -1,0 +1,689 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "吃啥盲盒后端API",
+    "description": "基于Python FastAPI开发的吃啥盲盒系统API文档",
+    "contact": {
+      "name": "Delta Team"
+    },
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/user/register": {
+      "post": {
+        "tags": [
+          "用户"
+        ],
+        "summary": "用户注册",
+        "description": "用户注册\n\n- **username**: 用户名（3-50字符）\n- **password**: 密码（至少6字符）\n\n返回示例：\n```json\n{\n    \"id\": 1,\n    \"username\": \"testuser\",\n    \"created_at\": \"2024-01-01T00:00:00\"\n}\n```",
+        "operationId": "register_api_user_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/user/login": {
+      "post": {
+        "tags": [
+          "用户"
+        ],
+        "summary": "用户登录",
+        "description": "用户登录\n\n- **username**: 用户名\n- **password**: 密码\n\n返回示例：\n```json\n{\n    \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n    \"token_type\": \"bearer\"\n}\n```",
+        "operationId": "login_api_user_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLogin"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Token"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/user/info": {
+      "get": {
+        "tags": [
+          "用户"
+        ],
+        "summary": "获取用户信息",
+        "description": "获取当前用户信息\n\n需要在请求头中携带 Bearer Token\n\n返回示例：\n```json\n{\n    \"id\": 1,\n    \"username\": \"testuser\",\n    \"created_at\": \"2024-01-01T00:00:00\",\n    \"today_remaining_times\": 2\n}\n```",
+        "operationId": "get_user_info_api_user_info_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfoResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/draw": {
+      "post": {
+        "tags": [
+          "抽取美食"
+        ],
+        "summary": "抽取美食",
+        "description": "抽取美食\n\n- 每日仅有 3 次免费抽取机会\n- 随机抽取一条美食\n- 自动记录抽取历史\n- 支持按餐饮类型、价格范围、分类筛选\n\n筛选参数：\n- **meal_type**: 餐饮类型 (1=早餐, 2=午餐, 3=晚餐, 4=夜宵)\n- **min_price**: 最小价格\n- **max_price**: 最大价格\n- **category**: 美食分类 (中餐、西餐、日料、韩餐、小吃、甜点、饮品等)\n\n需要在请求头中携带 Bearer Token\n\n返回示例：\n```json\n{\n    \"success\": true,\n    \"message\": \"抽取成功！今天就吃这个吧~\",\n    \"food\": {\n        \"id\": 1,\n        \"name\": \"红烧肉\",\n        \"category\": \"中餐\",\n        \"meal_type\": 2,\n        \"description\": \"肥而不腻，入口即化的经典中式菜肴\",\n        \"price\": 38.00,\n        \"image_url\": \"https://example.com/hongshaorou.jpg\"\n    },\n    \"remaining_times\": 2\n}\n```",
+        "operationId": "draw_food_api_draw_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "meal_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "maximum": 4,
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "餐饮类型: 1=早餐, 2=午餐, 3=晚餐, 4=夜宵",
+              "title": "Meal Type"
+            },
+            "description": "餐饮类型: 1=早餐, 2=午餐, 3=晚餐, 4=夜宵"
+          },
+          {
+            "name": "min_price",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "最小价格",
+              "title": "Min Price"
+            },
+            "description": "最小价格"
+          },
+          {
+            "name": "max_price",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "最大价格",
+              "title": "Max Price"
+            },
+            "description": "最大价格"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "美食分类: 中餐、西餐、日料、韩餐、小吃、甜点、饮品等",
+              "title": "Category"
+            },
+            "description": "美食分类: 中餐、西餐、日料、韩餐、小吃、甜点、饮品等"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DrawResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/draw/records": {
+      "get": {
+        "tags": [
+          "抽取美食"
+        ],
+        "summary": "获取抽取记录",
+        "description": "获取抽取记录\n\n返回过去 30 条抽取记录\n\n需要在请求头中携带 Bearer Token\n\n返回示例：\n```json\n[\n    {\n        \"id\": 1,\n        \"food\": {\n            \"id\": 1,\n            \"name\": \"红烧肉\",\n            \"category\": \"中餐\",\n            \"description\": \"肥而不腻，入口即化的经典中式菜肴\",\n            \"image_url\": \"https://example.com/hongshaorou.jpg\"\n        },\n        \"drawn_at\": \"2024-01-01T12:00:00\"\n    }\n]\n```",
+        "operationId": "get_draw_records_api_draw_records_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DrawRecordResponse"
+                  },
+                  "type": "array",
+                  "title": "Response Get Draw Records Api Draw Records Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/": {
+      "get": {
+        "tags": [
+          "健康检查"
+        ],
+        "summary": "API 根路径",
+        "description": "API 健康检查",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "健康检查"
+        ],
+        "summary": "健康检查",
+        "description": "健康检查端点",
+        "operationId": "health_check_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DrawRecordResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id",
+            "description": "唯一标识符"
+          },
+          "food": {
+            "$ref": "#/components/schemas/FoodResponse",
+            "description": "抽中的美食"
+          },
+          "drawn_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Drawn At",
+            "description": "抽取时间"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "food",
+          "drawn_at"
+        ],
+        "title": "DrawRecordResponse",
+        "example": {
+          "drawn_at": "2024-01-01T12:00:00",
+          "food": {
+            "category": "中餐",
+            "description": "肥而不腻，入口即化的经典中式菜肴",
+            "id": 1,
+            "image_url": "https://example.com/hongshaorou.jpg",
+            "name": "红烧肉",
+            "price": 38.0
+          },
+          "id": 1
+        }
+      },
+      "DrawResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "description": "操作是否成功"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息"
+          },
+          "food": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FoodResponse"
+              }
+            ],
+            "description": "抽取到的美食"
+          },
+          "remaining_times": {
+            "type": "integer",
+            "title": "Remaining Times",
+            "description": "今日剩余抽取次数"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "message",
+          "food",
+          "remaining_times"
+        ],
+        "title": "DrawResponse",
+        "example": {
+          "food": {
+            "category": "中餐",
+            "description": "肥而不腻，入口即化的经典中式菜肴",
+            "id": 1,
+            "image_url": "https://example.com/hongshaorou.jpg",
+            "name": "红烧肉",
+            "price": 38.0
+          },
+          "message": "抽取成功",
+          "remaining_times": 2,
+          "success": true
+        }
+      },
+      "FoodResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id",
+            "description": "唯一标识符"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "description": "美食名称"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category",
+            "description": "美食分类"
+          },
+          "meal_type": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Meal Type"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "美食描述"
+          },
+          "price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price"
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url",
+            "description": "美食图片URL"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "category"
+        ],
+        "title": "FoodResponse",
+        "example": {
+          "category": "中餐",
+          "description": "肥而不腻，入口即化的经典中式菜肴",
+          "id": 1,
+          "image_url": "https://example.com/hongshaorou.jpg",
+          "meal_type": 2,
+          "name": "红烧肉",
+          "price": 38.0
+        }
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Token": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token",
+            "description": "访问令牌"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type",
+            "default": "bearer",
+            "description": "令牌类型"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token"
+        ],
+        "title": "Token",
+        "example": {
+          "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+          "token_type": "bearer"
+        }
+      },
+      "UserCreate": {
+        "properties": {
+          "username": {
+            "type": "string",
+            "maxLength": 50,
+            "minLength": 3,
+            "title": "Username",
+            "description": "用户名"
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 6,
+            "title": "Password",
+            "description": "密码"
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "title": "UserCreate",
+        "example": {
+          "password": "password123",
+          "username": "testuser"
+        }
+      },
+      "UserInfoResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id",
+            "description": "唯一标识符"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username",
+            "description": "用户名"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At",
+            "description": "创建时间"
+          },
+          "today_remaining_times": {
+            "type": "integer",
+            "title": "Today Remaining Times",
+            "description": "今日剩余抽取次数"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "username",
+          "created_at",
+          "today_remaining_times"
+        ],
+        "title": "UserInfoResponse",
+        "example": {
+          "created_at": "2024-01-01T00:00:00",
+          "id": 1,
+          "today_remaining_times": 2,
+          "username": "testuser"
+        }
+      },
+      "UserLogin": {
+        "properties": {
+          "username": {
+            "type": "string",
+            "title": "Username",
+            "description": "用户名"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password",
+            "description": "密码"
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "title": "UserLogin",
+        "example": {
+          "password": "password123",
+          "username": "testuser"
+        }
+      },
+      "UserResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id",
+            "description": "唯一标识符"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username",
+            "description": "用户名"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At",
+            "description": "创建时间"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "username",
+          "created_at"
+        ],
+        "title": "UserResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000",
+      "description": "本地开发环境"
+    },
+    {
+      "url": "https://api.example.com",
+      "description": "生产环境"
+    }
+  ]
+}

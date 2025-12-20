@@ -1,0 +1,391 @@
+
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>吃啥盲盒小程序原型</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<style>
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-10px); }
+      40% { transform: translateX(10px); }
+      60% { transform: translateX(-8px); }
+      80% { transform: translateX(8px); }
+    }
+    .shake {
+      animation: shake 0.6s ease;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 p-[35px] flex flex-wrap justify-center gap-[35px]">
+<!-- 授权登录页 -->
+<div class="w-[375px] h-[812px] bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col">
+<header class="h-14"></header>
+<main class="flex-1 flex flex-col items-center justify-center px-6 space-y-10">
+<div class="bg-lime-500 w-24 h-24 rounded-full flex items-center justify-center">
+<iconify-icon class="text-white text-5xl" icon="mdi:gift"></iconify-icon>
+</div>
+<h1 class="text-3xl font-bold text-gray-800">吃啥盲盒</h1>
+<p class="text-gray-600 text-center">解决你的"今天吃什么"难题<br/>让美食选择变得有趣又简单</p>
+<div class="w-full space-y-4">
+<button class="w-full h-14 bg-lime-500 text-white font-semibold rounded-full flex items-center justify-center">
+<iconify-icon class="text-xl mr-2" icon="mdi:wechat"></iconify-icon>
+          微信一键登录
+        </button>
+<button class="w-full h-14 border-2 border-lime-500 text-lime-500 font-medium rounded-full">
+          手机号登录
+        </button>
+</div>
+</main>
+</div>
+<!-- 首页 -->
+<div class="w-[375px] h-[812px] bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col">
+<header class="h-14 flex items-center justify-between px-4 border-b border-gray-200">
+<h1 class="text-xl font-bold text-gray-800">吃啥盲盒</h1>
+<a href="#profile">
+<iconify-icon class="text-2xl text-gray-600" icon="mdi:account"></iconify-icon>
+</a>
+</header>
+<main class="flex-1 overflow-y-auto hide-scrollbar px-4 py-6">
+<div class="text-center mb-8">
+<h2 class="text-2xl font-bold text-gray-800 mb-2">今天吃啥？</h2>
+<p class="text-gray-600">让盲盒帮你决定！</p>
+</div>
+<!-- 场景选择区 -->
+<div class="mb-6">
+<p class="text-gray-700 font-semibold mb-3">选择用餐场景</p>
+<div class="grid grid-cols-4 gap-2">
+<button class="py-3 px-2 bg-lime-500 text-white rounded-lg font-medium text-sm transition-all" data-scene="breakfast">早餐</button>
+<button class="py-3 px-2 bg-gray-100 text-gray-700 rounded-lg font-medium text-sm transition-all" data-scene="lunch">午餐</button>
+<button class="py-3 px-2 bg-gray-100 text-gray-700 rounded-lg font-medium text-sm transition-all" data-scene="dinner">晚餐</button>
+<button class="py-3 px-2 bg-gray-100 text-gray-700 rounded-lg font-medium text-sm transition-all" data-scene="supper">夜宵</button>
+</div>
+</div>
+<!-- 预算滑块区 -->
+<div class="mb-8">
+<p class="text-gray-700 font-semibold mb-2">预算范围</p>
+<div class="flex items-center gap-3">
+<input class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-lime-500" id="budgetSlider" max="50" min="20" type="range" value="35"/>
+<span class="text-lime-500 font-bold text-lg w-16 text-right"><span id="budgetValue">35</span>元</span>
+</div>
+<div class="flex justify-between text-xs text-gray-500 mt-1">
+<span>20元</span>
+<span>50元</span>
+</div>
+</div>
+<!-- 盲盒区域 -->
+<div class="flex justify-center mb-10">
+<div class="w-60 h-60 bg-gradient-to-br from-lime-400 to-lime-600 rounded-2xl shadow-lg flex items-center justify-center relative cursor-pointer hover:shadow-xl transition-shadow" id="blindBoxElement">
+<div class="absolute inset-0 bg-white/10 rounded-2xl backdrop-blur-sm flex items-center justify-center">
+<iconify-icon class="text-white text-7xl" icon="mdi:gift"></iconify-icon>
+</div>
+</div>
+</div>
+<!-- 抽选按钮 -->
+<div class="flex justify-center mb-10">
+<button class="w-48 h-14 bg-lime-500 text-white font-semibold text-lg rounded-full shadow-md hover:shadow-lg transition-shadow" id="selectButton">
+          开始抽选
+        </button>
+</div>
+<!-- 历史记录 -->
+<div class="mb-8">
+<h3 class="text-lg font-semibold text-gray-800 mb-4">最近抽选</h3>
+<div class="space-y-3">
+<div class="bg-gray-50 rounded-xl p-3 flex items-center">
+<img alt="Restaurant image" class="w-16 h-16 rounded-lg mr-3" id="1" src="https://modao.cc/agent-py/media/generated_images/2025-12-10/9b86afba1013467db85aa8d1a453a73b.jpg"/>
+<div>
+<h4 class="font-medium text-gray-800">川味小馆</h4>
+<div class="flex items-center text-sm text-gray-500">
+<iconify-icon class="text-amber-400 mr-1" icon="mdi:star"></iconify-icon>
+<span class="mr-2">4.7</span>
+<iconify-icon class="mr-1" icon="mdi:currency-cny"></iconify-icon>
+<span>¥68</span>
+</div>
+</div>
+</div>
+<div class="bg-gray-50 rounded-xl p-3 flex items-center">
+<img alt="Restaurant image" class="w-16 h-16 rounded-lg mr-3" id="2" src="https://modao.cc/agent-py/media/generated_images/2025-12-10/0f749b566b0e4abfb85dd0f6f9b9b474.jpg"/>
+<div>
+<h4 class="font-medium text-gray-800">日式拉面屋</h4>
+<div class="flex items-center text-sm text-gray-500">
+<iconify-icon class="text-amber-400 mr-1" icon="mdi:star"></iconify-icon>
+<span class="mr-2">4.8</span>
+<iconify-icon class="mr-1" icon="mdi:currency-cny"></iconify-icon>
+<span>¥45</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- 快捷入口 -->
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-gray-50 rounded-xl p-4 flex flex-col items-center">
+<iconify-icon class="text-2xl text-lime-500 mb-2" icon="mdi:heart"></iconify-icon>
+<span class="text-gray-700">收藏餐厅</span>
+</div>
+<div class="bg-gray-50 rounded-xl p-4 flex flex-col items-center">
+<iconify-icon class="text-2xl text-lime-500 mb-2" icon="mdi:settings"></iconify-icon>
+<span class="text-gray-700">偏好设置</span>
+</div>
+</div>
+</main>
+</div>
+<!-- 抽取结果页 -->
+<div class="w-[375px] h-[812px] bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col">
+<header class="h-14 flex items-center px-4 border-b border-gray-200">
+<a class="mr-2" href="#home">
+<iconify-icon class="text-2xl text-gray-600" icon="mdi:arrow-left"></iconify-icon>
+</a>
+<h1 class="text-xl font-bold text-gray-800">抽取结果</h1>
+</header>
+<main class="flex-1 overflow-y-auto hide-scrollbar px-4 py-6">
+<div class="text-center mb-6">
+<h2 class="text-2xl font-bold text-gray-800 mb-2">锵锵！为你推荐：</h2>
+</div>
+<!-- 菜品卡片 -->
+<div class="bg-white rounded-2xl shadow-md overflow-hidden mb-8">
+<img alt="Dish image" class="w-full h-48 object-cover" id="3" src="https://modao.cc/agent-py/media/generated_images/2025-12-10/4e3385c564824d04998cd954ab7f4d69.jpg"/>
+<div class="p-5">
+<div class="flex justify-between items-start mb-3">
+<div>
+<h3 class="text-xl font-bold text-gray-800">冬阴功汤</h3>
+<p class="text-sm text-gray-600">泰香米餐厅</p>
+</div>
+<div class="flex items-center bg-amber-100 rounded-full px-3 py-1">
+<iconify-icon class="text-amber-400 mr-1" icon="mdi:star"></iconify-icon>
+<span class="font-medium">4.9</span>
+</div>
+</div>
+<div class="flex items-center text-gray-600 mb-4 text-lg">
+<iconify-icon class="mr-1" icon="mdi:currency-cny"></iconify-icon>
+<span class="font-bold text-gray-800">¥48</span>
+<span class="text-sm ml-2">/份</span>
+</div>
+<div class="flex flex-wrap gap-2 mb-5">
+<span class="bg-lime-100 text-lime-700 px-3 py-1 rounded-full text-sm">午餐</span>
+<span class="bg-lime-100 text-lime-700 px-3 py-1 rounded-full text-sm">晚餐</span>
+<span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-sm">预算30-50元</span>
+</div>
+<p class="text-gray-600 mb-4">
+            地道泰国风味，酸辣开胃。采用新鲜柠檬叶和朝天椒炮制，汤色红亮，口感层次丰富，是来泰香米必点的招牌菜。
+          </p>
+<div class="bg-gray-50 rounded-lg p-3">
+<p class="text-sm text-gray-700"><span class="font-semibold">用户评价：</span>"酸辣适中，真的很开胃！"</p>
+</div>
+</div>
+</div>
+<!-- 操作按钮 -->
+<div class="grid grid-cols-4 gap-3 mb-8">
+<button class="flex flex-col items-center">
+<div class="w-12 h-12 bg-lime-100 rounded-full flex items-center justify-center mb-1">
+<iconify-icon class="text-lime-500 text-xl" icon="mdi:reload"></iconify-icon>
+</div>
+<span class="text-xs text-gray-700">重新抽取</span>
+</button>
+<button class="flex flex-col items-center">
+<div class="w-12 h-12 bg-lime-100 rounded-full flex items-center justify-center mb-1">
+<iconify-icon class="text-lime-500 text-xl" icon="mdi:heart"></iconify-icon>
+</div>
+<span class="text-xs text-gray-700">收藏</span>
+</button>
+<button class="flex flex-col items-center">
+<div class="w-12 h-12 bg-lime-100 rounded-full flex items-center justify-center mb-1">
+<iconify-icon class="text-lime-500 text-xl" icon="mdi:map-marker"></iconify-icon>
+</div>
+<span class="text-xs text-gray-700">导航</span>
+</button>
+<button class="flex flex-col items-center">
+<div class="w-12 h-12 bg-lime-100 rounded-full flex items-center justify-center mb-1">
+<iconify-icon class="text-lime-500 text-xl" icon="mdi:share"></iconify-icon>
+</div>
+<span class="text-xs text-gray-700">分享</span>
+</button>
+</div>
+<!-- 相似推荐 -->
+<div>
+<h3 class="text-lg font-semibold text-gray-800 mb-4">相似菜品推荐</h3>
+<div class="flex overflow-x-auto pb-3 hide-scrollbar space-x-3">
+<div class="flex-shrink-0 w-32 bg-gray-50 rounded-xl p-3">
+<img alt="Similar dish" class="w-full h-24 rounded-lg mb-2" id="4" src="https://modao.cc/agent-py/media/generated_images/2025-12-10/c13cb087e21c41e6a3395f39195043c1.jpg"/>
+<h4 class="font-medium text-gray-800 text-sm truncate">绿咖喱鸡</h4>
+<p class="text-xs text-gray-500 truncate">南洋小馆</p>
+<div class="flex items-center text-xs text-gray-500 mt-1">
+<iconify-icon class="text-amber-400 text-xs mr-1" icon="mdi:star"></iconify-icon>
+<span>4.7</span>
+<span class="ml-1 text-gray-400">¥42</span>
+</div>
+</div>
+<div class="flex-shrink-0 w-32 bg-gray-50 rounded-xl p-3">
+<img alt="Similar dish" class="w-full h-24 rounded-lg mb-2" id="5" src="https://modao.cc/agent-py/media/generated_images/2025-12-10/474acd2b22da47f7b6e8a59df4ed5e5f.jpg"/>
+<h4 class="font-medium text-gray-800 text-sm truncate">泰式酸辣虾</h4>
+<p class="text-xs text-gray-500 truncate">越苑越南菜</p>
+<div class="flex items-center text-xs text-gray-500 mt-1">
+<iconify-icon class="text-amber-400 text-xs mr-1" icon="mdi:star"></iconify-icon>
+<span>4.6</span>
+<span class="ml-1 text-gray-400">¥52</span>
+</div>
+</div>
+<div class="flex-shrink-0 w-32 bg-gray-50 rounded-xl p-3">
+<img alt="Similar dish" class="w-full h-24 rounded-lg mb-2" id="6" src="https://modao.cc/agent-py/media/generated_images/2025-12-10/b6e46e8d542d4806843f2362dafde1ea.jpg"/>
+<h4 class="font-medium text-gray-800 text-sm truncate">咖喱蟹</h4>
+<p class="text-xs text-gray-500 truncate">泰香米餐厅</p>
+<div class="flex items-center text-xs text-gray-500 mt-1">
+<iconify-icon class="text-amber-400 text-xs mr-1" icon="mdi:star"></iconify-icon>
+<span>4.5</span>
+<span class="ml-1 text-gray-400">¥68</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- 个人中心页 -->
+<div class="w-[375px] h-[812px] bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col" id="profile">
+<header class="h-14 flex items-center justify-between px-4 border-b border-gray-200">
+<h1 class="text-xl font-bold text-gray-800">我的</h1>
+<iconify-icon class="text-2xl text-gray-600" icon="mdi:cog"></iconify-icon>
+</header>
+<main class="flex-1 overflow-y-auto hide-scrollbar px-4 py-6">
+<!-- 用户信息 -->
+<div class="flex items-center mb-8">
+<div class="w-16 h-16 bg-lime-100 rounded-full flex items-center justify-center mr-4">
+<iconify-icon class="text-lime-500 text-3xl" icon="mdi:account"></iconify-icon>
+</div>
+<div>
+<h2 class="text-xl font-bold text-gray-800">美食探索家</h2>
+<p class="text-gray-600">黄金会员</p>
+</div>
+</div>
+<!-- 数据卡片 -->
+<div class="bg-gradient-to-r from-lime-100 to-amber-100 rounded-2xl p-5 mb-8">
+<div class="grid grid-cols-2 gap-4">
+<div class="text-center">
+<div class="text-3xl font-bold text-gray-800">12</div>
+<div class="text-gray-600">本月抽选</div>
+</div>
+<div class="text-center">
+<div class="text-3xl font-bold text-gray-800">7</div>
+<div class="text-gray-600">新尝试</div>
+</div>
+</div>
+</div>
+<!-- 功能菜单 -->
+<div class="space-y-4 mb-8">
+<div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+<div class="flex items-center">
+<iconify-icon class="text-lime-500 text-2xl mr-3" icon="mdi:heart"></iconify-icon>
+<span class="text-gray-700">收藏餐厅</span>
+</div>
+<iconify-icon class="text-gray-400" icon="mdi:chevron-right"></iconify-icon>
+</div>
+<div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+<div class="flex items-center">
+<iconify-icon class="text-lime-500 text-2xl mr-3" icon="mdi:history"></iconify-icon>
+<span class="text-gray-700">抽选历史</span>
+</div>
+<iconify-icon class="text-gray-400" icon="mdi:chevron-right"></iconify-icon>
+</div>
+<div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+<div class="flex items-center">
+<iconify-icon class="text-lime-500 text-2xl mr-3" icon="mdi:filter"></iconify-icon>
+<span class="text-gray-700">偏好设置</span>
+</div>
+<iconify-icon class="text-gray-400" icon="mdi:chevron-right"></iconify-icon>
+</div>
+</div>
+<!-- 系统功能 -->
+<div class="space-y-4">
+<div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+<div class="flex items-center">
+<iconify-icon class="text-gray-500 text-2xl mr-3" icon="mdi:message"></iconify-icon>
+<span class="text-gray-700">意见反馈</span>
+</div>
+<iconify-icon class="text-gray-400" icon="mdi:chevron-right"></iconify-icon>
+</div>
+<div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+<div class="flex items-center">
+<iconify-icon class="text-gray-500 text-2xl mr-3" icon="mdi:information"></iconify-icon>
+<span class="text-gray-700">关于我们</span>
+</div>
+<iconify-icon class="text-gray-400" icon="mdi:chevron-right"></iconify-icon>
+</div>
+<div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+<div class="flex items-center">
+<iconify-icon class="text-gray-500 text-2xl mr-3" icon="mdi:delete"></iconify-icon>
+<span class="text-gray-700">清除缓存</span>
+</div>
+<iconify-icon class="text-gray-400" icon="mdi:chevron-right"></iconify-icon>
+</div>
+</div>
+</main>
+</div>
+<script>
+    // 简单页面跳转逻辑
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          targetElement.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+
+    // 场景选择逻辑
+    const sceneButtons = document.querySelectorAll('button[data-scene]');
+    sceneButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        sceneButtons.forEach(btn => {
+          btn.classList.remove('bg-lime-500', 'text-white');
+          btn.classList.add('bg-gray-100', 'text-gray-700');
+        });
+        this.classList.remove('bg-gray-100', 'text-gray-700');
+        this.classList.add('bg-lime-500', 'text-white');
+      });
+    });
+
+    // 预算滑块逻辑
+    const budgetSlider = document.getElementById('budgetSlider');
+    const budgetValue = document.getElementById('budgetValue');
+    if (budgetSlider) {
+      budgetSlider.addEventListener('input', function() {
+        budgetValue.textContent = this.value;
+      });
+    }
+
+    // 盲盒抽选动画
+    const blindBox = document.getElementById('blindBoxElement');
+    const selectButton = document.getElementById('selectButton');
+    
+    function triggerBlindBoxAnimation() {
+      if (blindBox) {
+        blindBox.classList.add('shake');
+        setTimeout(() => {
+          blindBox.classList.remove('shake');
+          // 这里可以添加跳转到结果页的逻辑
+        }, 600);
+      }
+    }
+
+    if (blindBox) {
+      blindBox.addEventListener('click', triggerBlindBoxAnimation);
+    }
+    
+    if (selectButton) {
+      selectButton.addEventListener('click', triggerBlindBoxAnimation);
+    }
+  </script>
+</body>
+</html>

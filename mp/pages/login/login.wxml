@@ -1,0 +1,75 @@
+<view class="container-login">
+  <!-- 背景装饰 -->
+  <view class="bg-decoration">
+    <view class="bg-circle bg-circle-1"></view>
+    <view class="bg-circle bg-circle-2"></view>
+    <view class="bg-circle bg-circle-3"></view>
+  </view>
+  
+  <view class="login-card fade-in">
+    <!-- 顶部装饰区域 -->
+    <view class="card-header">
+      <view class="header-pattern"></view>
+    </view>
+    
+    <view class="content">
+      <!-- Logo区域 -->
+      <view class="logo-section">
+        <view class="logo-container float">
+          <view class="logo-inner">
+            <image class="logo-icon" src="../../static/icons/gift.png" mode="aspectFit" />
+          </view>
+          <view class="logo-ring"></view>
+        </view>
+      </view>
+      
+      <!-- 标题区域 -->
+      <view class="title-section">
+        <text class="title">吃啥盲盒</text>
+        <view class="title-decoration">
+          <view class="decoration-line"></view>
+          <text class="decoration-icon">🍜</text>
+          <view class="decoration-line"></view>
+        </view>
+        <text class="subtitle">解决你的"今天吃什么"难题</text>
+        <text class="subtitle-secondary">让美食选择变得有趣又简单</text>
+      </view>
+      
+      <!-- 特性展示 -->
+      <view class="features">
+        <view class="feature-item">
+          <text class="feature-icon">🎲</text>
+          <text class="feature-text">随机惊喜</text>
+        </view>
+        <view class="feature-item">
+          <text class="feature-icon">📍</text>
+          <text class="feature-text">附近美食</text>
+        </view>
+        <view class="feature-item">
+          <text class="feature-icon">💰</text>
+          <text class="feature-text">预算可控</text>
+        </view>
+      </view>
+      
+      <!-- 登录按钮区域 -->
+      <view class="actions">
+        <button class="btn-wechat" bindtap="onLogin" hover-class="btn-wechat-hover">
+          <image class="btn-icon" src="../../static/icons/wechat.png" mode="aspectFit" />
+          <text>微信一键登录</text>
+        </button>
+        <button class="btn-phone" hover-class="btn-phone-hover">
+          <text class="btn-phone-icon">📱</text>
+          <text>手机号登录</text>
+        </button>
+      </view>
+      
+      <!-- 协议提示 -->
+      <view class="agreement">
+        <text class="agreement-text">登录即表示同意</text>
+        <text class="agreement-link">《用户协议》</text>
+        <text class="agreement-text">和</text>
+        <text class="agreement-link">《隐私政策》</text>
+      </view>
+    </view>
+  </view>
+</view>

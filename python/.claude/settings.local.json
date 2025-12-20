@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(C:UsersAdministratorDesktopwhat-eatpythonvenvScriptspython.exe -c \"from app.config import settings; print(f''HOST: {settings.APP_HOST}, PORT: {settings.APP_PORT}'')\")",
+      "Bash(C:UsersAdministratorDesktopwhat-eatpythonvenvScriptspython.exe -c \"from app.database import SessionLocal; from app.models.food import Food; db = SessionLocal(); foods = db.query(Food).all(); print(f''Total: {len(foods)}''); [print(f''{f.id}|{f.name}|{f.category}|{f.meal_type}'') for f in foods]; db.close()\")",
+      "Bash(cmd.exe /c \"C:\\Users\\Administrator\\Desktop\\what-eat\\python\\venv\\Scripts\\python.exe -c \"\"from app.database import SessionLocal; from app.models.food import Food; db = SessionLocal(); foods = db.query(Food).all(); print(len(foods)); [print(f''{f.id}|{f.name}|{f.category}|{f.meal_type}'') for f in foods]; db.close()\"\"\")",
+      "Bash(cmd.exe /c \"cd /d C:\\Users\\Administrator\\Desktop\\what-eat\\python && venv\\Scripts\\python.exe query_foods.py\")",
+      "Bash(cmd.exe /c \"cd /d C:\\Users\\Administrator\\Desktop\\what-eat\\python && venv\\Scripts\\python.exe query_foods.py 2>&1\")"
+    ]
+  }
+}

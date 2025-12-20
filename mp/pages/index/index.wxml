@@ -1,0 +1,116 @@
+<view class="container-index">
+  <view class="main-card">
+    <!-- 自定义导航栏 - 适配胶囊 -->
+    <view class="custom-nav" style="padding-top: {{statusBarHeight}}px;">
+      <view class="nav-content" style="height: {{navBarHeight}}px;">
+        <view class="nav-left">
+          <text class="app-logo">🍱</text>
+          <text class="app-title">吃啥盲盒</text>
+        </view>
+        <navigator url="/pages/profile/profile" hover-class="none" class="avatar-btn">
+          <view class="avatar-circle">
+            <text class="avatar-icon">👤</text>
+          </view>
+        </navigator>
+      </view>
+    </view>
+    
+    <scroll-view scroll-y class="content-scroll" enhanced="{{true}}" show-scrollbar="{{false}}">
+      <!-- 欢迎区域 -->
+      <view class="hero-section">
+        <view class="hero-badge">
+          <text class="badge-icon">✨</text>
+          <text class="badge-text">今日推荐</text>
+        </view>
+        <text class="hero-title">今天吃啥？</text>
+        <text class="hero-subtitle">摇一摇盲盒，让惊喜来决定！</text>
+      </view>
+
+      <!-- 场景选择 -->
+      <view class="section">
+        <view class="section-header">
+          <text class="section-title">🍽️ 用餐场景</text>
+        </view>
+        <view class="scene-grid">
+          <view 
+            wx:for="{{scenes}}" 
+            wx:key="id" 
+            class="scene-card {{selectedScene === item.id ? 'active' : ''}}"
+            bindtap="selectScene"
+            data-id="{{item.id}}"
+          >
+            <text class="scene-icon">{{item.icon}}</text>
+            <text class="scene-name">{{item.name}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 预算范围 - 双滑块 -->
+      <view class="section">
+        <view class="section-header">
+          <text class="section-title">💰 预算范围</text>
+          <view class="budget-badge">
+            <text class="budget-value">{{budgetMin}}-{{budgetMax}}元</text>
+          </view>
+        </view>
+        
+        <!-- 自定义双滑块组件 -->
+        <view class="range-slider-container">
+          <view class="range-slider" 
+                bindtouchstart="onSliderTouchStart"
+                bindtouchmove="onSliderTouchMove"
+                bindtouchend="onSliderTouchEnd">
+            <!-- 滑轨背景 -->
+            <view class="slider-track"></view>
+            <!-- 选中区域 -->
+            <view class="slider-range" style="left: {{rangeLeft}}%; width: {{rangeWidth}}%;"></view>
+            <!-- 左滑块 -->
+            <view class="slider-thumb thumb-left" style="left: {{rangeLeft}}%;">
+              <view class="thumb-inner"></view>
+            </view>
+            <!-- 右滑块 -->
+            <view class="slider-thumb thumb-right" style="left: {{rangeRight}}%;">
+              <view class="thumb-inner"></view>
+            </view>
+          </view>
+          <!-- 刻度标签 -->
+          <view class="slider-labels">
+            <text class="label-text">0元</text>
+            <text class="label-text">100元</text>
+            <text class="label-text">200元</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 盲盒区域 -->
+      <view class="blindbox-section">
+        <view class="blindbox-wrapper">
+          <view class="blindbox {{isShaking ? 'shake' : ''}} {{isPressed ? 'pressed' : ''}}" 
+                bindtap="startDraw"
+                bindtouchstart="onBoxTouchStart"
+                bindtouchend="onBoxTouchEnd">
+            <view class="blindbox-glow"></view>
+            <view class="blindbox-inner">
+              <view class="blindbox-face">
+                <text class="gift-icon">🎁</text>
+              </view>
+            </view>
+            <view class="blindbox-shadow"></view>
+          </view>
+          <text class="blindbox-hint">点击盲盒开始抽选</text>
+        </view>
+      </view>
+
+      <!-- 底部占位 -->
+      <view class="bottom-placeholder"></view>
+    </scroll-view>
+
+    <!-- 底部固定按钮 -->
+    <view class="bottom-fixed">
+      <button class="btn-draw {{isShaking ? 'disabled' : ''}}" bindtap="startDraw" disabled="{{isShaking}}">
+        <text class="btn-icon">🎲</text>
+        <text class="btn-text">{{isShaking ? '抽选中...' : '开始抽选'}}</text>
+      </button>
+    </view>
+  </view>
+</view>
