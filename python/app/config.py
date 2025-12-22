@@ -27,6 +27,10 @@ class Settings(BaseSettings):
     # Draw
     DAILY_FREE_TIMES: int = 3
 
+    # WeChat Mini Program
+    WECHAT_APPID: str = ""  # 微信小程序 AppID
+    WECHAT_SECRET: str = ""  # 微信小程序 AppSecret
+
 
 @lru_cache()
 def get_settings() -> Settings:
