@@ -1,0 +1,215 @@
+<view class="container">
+  <view class="content">
+    <!-- 用户协议 -->
+    <block wx:if="{{type === 'user'}}">
+      <view class="section">
+        <text class="section-title">一、服务条款的确认和接纳</text>
+        <text class="section-content">欢迎使用"选餐侠"小程序（以下简称"本小程序"）。本小程序由开发者提供，旨在帮助用户解决"今天吃什么"的选择困难问题。在使用本小程序之前，请您仔细阅读本用户协议（以下简称"本协议"）的全部内容。
+
+您使用本小程序即表示您已阅读、理解并同意接受本协议的全部条款。如果您不同意本协议的任何内容，请立即停止使用本小程序。</text>
+      </view>
+
+      <view class="section">
+        <text class="section-title">二、服务内容</text>
+        <text class="section-content">1. 本小程序提供美食随机推荐服务，帮助用户在选择困难时获得美食建议。
+
+2. 用户可以根据用餐场景（早餐、午餐、晚餐、夜宵）和预算范围进行筛选。
+
+3. 本小程序提供的美食推荐仅供参考，不构成任何消费建议或承诺。
+
+4. 我们会不断优化和更新服务内容，以提供更好的用户体验。</text>
+      </view>
+
+      <view class="section">
+        <text class="section-title">三、用户账号</text>
+        <text class="section-content">1. 用户可以通过微信授权登录或注册账号使用本小程序。
+
+2. 用户应妥善保管自己的账号信息，因账号保管不善造成的损失由用户自行承担。
+
+3. 用户不得将账号转让、出借给他人使用。
+
+4. 如发现账号被盗用或存在安全风险，请立即联系我们。</text>
+      </view>
+
+      <view class="section">
+        <text class="section-title">四、用户行为规范</text>
+        <text class="section-content">用户在使用本小程序时，应遵守以下规范：
+
+1. 遵守中华人民共和国相关法律法规。
+
+2. 不得利用本小程序从事任何违法违规活动。
+
+3. 不得干扰本小程序的正常运行。
+
+4. 不得恶意刷取抽选次数或进行其他作弊行为。
+
+5. 尊重其他用户的合法权益。</text>
+      </view>
+
+      <view class="section">
+        <text class="section-title">五、知识产权</text>
+        <text class="section-content">1. 本小程序的所有内容，包括但不限于文字、图片、音频、视频、软件、程序、界面设计、版面框架等，均受知识产权法律法规保护。
+
+2. 未经我们书面许可，用户不得复制、修改、传播本小程序的任何内容。
+
+3. 用户在本小程序中产生的内容，用户享有相应的权利，但同时授权我们在本小程序范围内使用。</text>
+      </view>
+
+      <view class="section">
+        <text class="section-title">六、免责声明</text>
+        <text class="section-content">1. 本小程序提供的美食推荐仅供参考，我们不对推荐结果的准确性、适用性作任何保证。
+
+2. 用户根据推荐结果做出的任何决定，由用户自行承担责任。
+
+3. 因不可抗力、系统维护等原因导致服务中断，我们不承担责任。
+
+4. 本小程序中展示的美食图片仅供参考，实际菜品以商家提供为准。</text>
+      </view>
+
+      <view class="section">
+        <text class="section-title">七、协议修改</text>
+        <text class="section-content">我们有权根据需要修改本协议的内容。协议修改后，我们会在小程序内发布更新通知。如果您继续使用本小程序，即表示您接受修改后的协议。</text>
+      </view>
+
+      <view class="section">
+        <text class="section-title">八、联系我们</text>
+        <text class="section-content">如果您对本协议有任何疑问或建议，欢迎通过以下方式联系我们：
+
+邮箱：2442827802a@gmail.com
+
+我们将尽快回复您的问题。</text>
+      </view>
+
+      <view class="footer">
+        <text class="footer-text">本协议最后更新日期：2024年12月</text>
+        <text class="footer-text">选餐侠 版权所有</text>
+      </view>
+    </block>
+
+    <!-- 隐私政策 -->
+    <block wx:if="{{type === 'privacy'}}">
+      <view class="section">
+        <text class="section-title">引言</text>
+        <text class="section-content">"选餐侠"小程序（以下简称"我们"）非常重视用户的隐私保护。本隐私政策旨在向您说明我们如何收集、使用、存储和保护您的个人信息。
+
+请您在使用我们的服务前，仔细阅读并理解本隐私政策的全部内容。使用我们的服务即表示您同意本隐私政策的内容。</text>
+      </view>
+
+      <view class="section">
+        <text class="section-title">一、我们收集的信息</text>
+        <text class="section-content">为了向您提供服务，我们可能会收集以下信息：
+
+1. 账号信息
+- 微信授权登录时获取的微信昵称、头像
+- 您注册时提供的用户名
+
+2. 使用信息
+- 您的抽选记录和偏好设置
+- 用餐场景和预算范围选择
+
+3. 设备信息
+- 设备型号、操作系统版本
+- 网络状态信息
+
+4. 日志信息
+- 访问时间、访问页面
+- 错误日志（用于改进服务）</text>
+      </view>
+
+      <view class="section">
+        <text class="section-title">二、信息的使用</text>
+        <text class="section-content">我们收集的信息将用于以下目的：
+
+1. 提供核心服务
+- 为您提供美食随机推荐服务
+- 记录您的抽选历史
+
+2. 改进服务
+- 分析用户使用习惯，优化推荐算法
+- 修复问题，提升用户体验
+
+3. 安全保障
+- 验证用户身份
+- 防止恶意行为和欺诈
+
+4. 通知推送
+- 发送服务相关的重要通知</text>
+      </view>
+
+      <view class="section">
+        <text class="section-title">三、信息的存储</text>
+        <text class="section-content">1. 存储地点
+您的个人信息将存储在中华人民共和国境内的服务器上。
+
+2. 存储期限
+我们只会在实现本隐私政策所述目的所必需的期限内保留您的个人信息，除非法律要求或允许更长的保留期限。
+
+3. 数据安全
+我们采用业界标准的安全措施保护您的个人信息，包括但不限于：
+- 数据加密传输
+- 访问权限控制
+- 安全审计日志</text>
+      </view>
+
+      <view class="section">
+        <text class="section-title">四、信息的共享</text>
+        <text class="section-content">我们承诺不会将您的个人信息出售给任何第三方。在以下情况下，我们可能会共享您的信息：
+
+1. 获得您的明确同意后
+
+2. 根据法律法规的要求或政府部门的强制性要求
+
+3. 为保护我们、用户或公众的权益、财产或安全所必需
+
+4. 与我们的关联公司共享，但仅限于本隐私政策所述目的</text>
+      </view>
+
+      <view class="section">
+        <text class="section-title">五、您的权利</text>
+        <text class="section-content">根据相关法律法规，您对您的个人信息享有以下权利：
+
+1. 访问权
+您有权访问我们持有的关于您的个人信息。
+
+2. 更正权
+如果您发现我们持有的个人信息不准确，您有权要求我们更正。
+
+3. 删除权
+在特定情况下，您有权要求我们删除您的个人信息。
+
+4. 撤回同意
+您可以随时撤回您之前给予的同意，但不影响撤回前基于同意的处理活动的合法性。
+
+如需行使上述权利，请通过本政策末尾的联系方式与我们联系。</text>
+      </view>
+
+      <view class="section">
+        <text class="section-title">六、未成年人保护</text>
+        <text class="section-content">我们非常重视对未成年人个人信息的保护。如果您是未满18周岁的未成年人，请在您的父母或监护人的陪同下阅读本隐私政策，并在取得他们的同意后使用我们的服务。
+
+如果我们发现在未获得可证实的父母或监护人同意的情况下收集了未成年人的个人信息，我们将尽快删除相关信息。</text>
+      </view>
+
+      <view class="section">
+        <text class="section-title">七、隐私政策的更新</text>
+        <text class="section-content">我们可能会不时更新本隐私政策。更新后的隐私政策将在小程序内发布，并注明更新日期。
+
+对于重大变更，我们会通过小程序内通知或其他适当方式提醒您。建议您定期查阅本隐私政策，以了解我们如何保护您的信息。</text>
+      </view>
+
+      <view class="section">
+        <text class="section-title">八、联系我们</text>
+        <text class="section-content">如果您对本隐私政策有任何疑问、意见或建议，或者需要行使您的相关权利，请通过以下方式联系我们：
+
+邮箱：2442827802a@gmail.com
+
+我们将在收到您的请求后15个工作日内回复。</text>
+      </view>
+
+      <view class="footer">
+        <text class="footer-text">本隐私政策最后更新日期：2024年12月</text>
+        <text class="footer-text">选餐侠 版权所有</text>
+      </view>
+    </block>
+  </view>
+</view>

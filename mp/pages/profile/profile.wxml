@@ -118,8 +118,8 @@
 
       <!-- 底部版权信息 -->
       <view class="footer">
-        <text class="footer-text">吃啥盲盒 © 2024</text>
-        <text class="footer-slogan">让美食选择变得有趣</text>
+        <text class="footer-text">选餐侠 © 2024</text>
+        <text class="footer-slogan">解决你的选择困难症</text>
       </view>
 
       <!-- 底部安全区域 -->

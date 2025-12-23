@@ -39,6 +39,12 @@
   font-size: 40rpx;
 }
 
+.app-logo-image {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 12rpx;
+}
+
 .app-title {
   font-size: 34rpx;
   font-weight: 700;

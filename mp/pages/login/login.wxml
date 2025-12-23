@@ -3,97 +3,101 @@
   <view class="bg-decoration">
     <view class="bg-circle bg-circle-1"></view>
     <view class="bg-circle bg-circle-2"></view>
-    <view class="bg-circle bg-circle-3"></view>
   </view>
   
-  <view class="login-card fade-in">
-    <!-- 顶部装饰区域 -->
-    <view class="card-header">
-      <view class="header-pattern"></view>
-    </view>
-    
-    <view class="content">
-      <!-- Logo区域 -->
-      <view class="logo-section">
-        <view class="logo-container float">
-          <view class="logo-inner">
-            <image class="logo-icon" src="../../static/icons/gift.png" mode="aspectFit" />
+  <scroll-view class="login-scroll" scroll-y="true" enhanced="true" show-scrollbar="false">
+    <view class="login-card fade-in">
+      <view class="content">
+        <!-- Logo和标题区域 -->
+        <view class="header-section">
+          <view class="logo-container">
+            <image class="logo-image" src="../../static/logo.jpeg" mode="aspectFill" />
           </view>
-          <view class="logo-ring"></view>
+          <text class="title">选餐侠</text>
+          <text class="subtitle">{{isRegisterMode ? '创建新账号' : '解决你的选择困难症'}}</text>
         </view>
-      </view>
-      
-      <!-- 标题区域 -->
-      <view class="title-section">
-        <text class="title">吃啥盲盒</text>
-        <view class="title-decoration">
-          <view class="decoration-line"></view>
-          <text class="decoration-icon">🍜</text>
-          <view class="decoration-line"></view>
-        </view>
-        <text class="subtitle">{{isRegisterMode ? '创建新账号' : '欢迎回来'}}</text>
-      </view>
-      
-      <!-- 输入表单 -->
-      <view class="form-section">
-        <view class="input-group">
-          <text class="input-icon">👤</text>
-          <input 
-            class="input-field" 
-            type="text" 
-            placeholder="请输入用户名（至少3个字符）" 
-            value="{{username}}"
-            bindinput="onUsernameInput"
-            maxlength="50"
-          />
-        </view>
-        <view class="input-group">
-          <text class="input-icon">🔒</text>
-          <input 
-            class="input-field" 
-            type="password" 
-            placeholder="请输入密码（至少6个字符）" 
-            value="{{password}}"
-            bindinput="onPasswordInput"
-            maxlength="100"
-          />
-        </view>
-        <view class="input-group" wx:if="{{isRegisterMode}}">
-          <text class="input-icon">🔒</text>
-          <input 
-            class="input-field" 
-            type="password" 
-            placeholder="请确认密码" 
-            value="{{confirmPassword}}"
-            bindinput="onConfirmPasswordInput"
-            maxlength="100"
-          />
-        </view>
-      </view>
-      
-      <!-- 登录/注册按钮 -->
-      <view class="actions">
-        <button 
-          class="btn-primary" 
-          bindtap="{{isRegisterMode ? 'onRegister' : 'onLogin'}}" 
-          disabled="{{isLoading}}"
-          hover-class="btn-primary-hover"
-        >
-          <text class="btn-text">{{isLoading ? '请稍候...' : (isRegisterMode ? '注册' : '登录')}}</text>
-        </button>
         
-        <view class="switch-mode" bindtap="toggleMode">
-          <text class="switch-text">{{isRegisterMode ? '已有账号？去登录' : '没有账号？去注册'}}</text>
+        <!-- 微信登录按钮（优先展示） -->
+        <view class="wechat-login" wx:if="{{!isRegisterMode}}">
+          <button
+            class="btn-wechat"
+            bindtap="onWechatLogin"
+            disabled="{{isWechatLoading}}"
+            hover-class="btn-wechat-hover"
+          >
+            <image class="wechat-icon" src="../../static/icons/wechat.png" mode="aspectFit" />
+            <text class="btn-wechat-text">{{isWechatLoading ? '登录中...' : '微信一键登录'}}</text>
+          </button>
         </view>
-      </view>
-      
-      <!-- 协议提示 -->
-      <view class="agreement">
-        <text class="agreement-text">登录即表示同意</text>
-        <text class="agreement-link" bindtap="onViewAgreement">《用户协议》</text>
-        <text class="agreement-text">和</text>
-        <text class="agreement-link" bindtap="onViewPrivacy">《隐私政策》</text>
+        
+        <!-- 分隔线 -->
+        <view class="divider" wx:if="{{!isRegisterMode}}">
+          <view class="divider-line"></view>
+          <text class="divider-text">或使用账号登录</text>
+          <view class="divider-line"></view>
+        </view>
+        
+        <!-- 输入表单 -->
+        <view class="form-section">
+          <view class="input-group">
+            <text class="input-icon">👤</text>
+            <input
+              class="input-field"
+              type="text"
+              placeholder="用户名（至少3个字符）"
+              value="{{username}}"
+              bindinput="onUsernameInput"
+              maxlength="50"
+            />
+          </view>
+          <view class="input-group">
+            <text class="input-icon">🔒</text>
+            <input
+              class="input-field"
+              type="password"
+              placeholder="密码（至少6个字符）"
+              value="{{password}}"
+              bindinput="onPasswordInput"
+              maxlength="100"
+            />
+          </view>
+          <view class="input-group" wx:if="{{isRegisterMode}}">
+            <text class="input-icon">🔒</text>
+            <input
+              class="input-field"
+              type="password"
+              placeholder="确认密码"
+              value="{{confirmPassword}}"
+              bindinput="onConfirmPasswordInput"
+              maxlength="100"
+            />
+          </view>
+        </view>
+        
+        <!-- 登录/注册按钮 -->
+        <view class="actions">
+          <button
+            class="btn-primary"
+            bindtap="{{isRegisterMode ? 'onRegister' : 'onLogin'}}"
+            disabled="{{isLoading}}"
+            hover-class="btn-primary-hover"
+          >
+            <text class="btn-text">{{isLoading ? '请稍候...' : (isRegisterMode ? '注册' : '登录')}}</text>
+          </button>
+          
+          <view class="switch-mode" bindtap="toggleMode">
+            <text class="switch-text">{{isRegisterMode ? '已有账号？去登录' : '没有账号？去注册'}}</text>
+          </view>
+        </view>
+        
+        <!-- 协议提示 -->
+        <view class="agreement">
+          <text class="agreement-text">登录即表示同意</text>
+          <text class="agreement-link" bindtap="onViewAgreement">《用户协议》</text>
+          <text class="agreement-text">和</text>
+          <text class="agreement-link" bindtap="onViewPrivacy">《隐私政策》</text>
+        </view>
       </view>
     </view>
-  </view>
+  </scroll-view>
 </view>

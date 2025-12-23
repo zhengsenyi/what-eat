@@ -1,5 +1,7 @@
 // API服务模块
-const BASE_URL = 'https://zhengsenyi.xyz';
+// 由于域名未完成ICP备案，暂时使用IP地址
+// 备案完成后请改回域名: http://zhengsenyi.xyz:8000
+const BASE_URL = 'http://120.24.24.166:8000';
 
 // HTTP请求封装
 const request = (options) => {
@@ -72,6 +74,27 @@ const userApi = {
     return request({
       url: '/api/user/info',
       method: 'GET'
+    });
+  },
+
+  // 微信授权登录
+  wechatLogin: (code) => {
+    return request({
+      url: '/api/user/wechat/login',
+      method: 'POST',
+      data: { code }
+    });
+  },
+
+  // 更新微信用户信息
+  updateWechatUserInfo: (nickname, avatarUrl) => {
+    return request({
+      url: '/api/user/wechat/userinfo',
+      method: 'PUT',
+      data: {
+        nickname: nickname,
+        avatar_url: avatarUrl
+      }
     });
   }
 };

@@ -15,8 +15,8 @@
   <view class="custom-nav" style="padding-top: {{statusBarHeight}}px;">
     <view class="nav-content" style="height: {{navBarHeight}}px;">
       <view class="nav-left">
-        <text class="app-logo">🍱</text>
-        <text class="app-title">吃啥盲盒</text>
+        <image class="app-logo-image" src="../../static/logo.jpeg" mode="aspectFill" />
+        <text class="app-title">选餐侠</text>
       </view>
       <!-- 右侧区域：我的入口 + 胶囊占位 -->
       <view class="nav-right">

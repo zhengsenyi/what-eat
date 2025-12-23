@@ -399,14 +399,14 @@ Page({
   // 分享
   onShareAppMessage() {
     return {
-      title: '吃啥盲盒 - 解决你的选择困难症！',
+      title: '选餐侠 - 解决你的选择困难症！',
       path: '/pages/login/login'
     };
   },
 
   onShareTimeline() {
     return {
-      title: '吃啥盲盒 - 解决你的选择困难症！',
+      title: '选餐侠 - 解决你的选择困难症！',
       query: ''
     };
   }

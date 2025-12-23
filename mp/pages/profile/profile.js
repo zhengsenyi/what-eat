@@ -200,8 +200,8 @@ Page({
   // 跳转到关于我们
   goToAbout() {
     wx.showModal({
-      title: '关于吃啥盲盒',
-      content: '版本：1.0.0\n\n吃啥盲盒是一款帮助你解决"今天吃什么"难题的小程序。\n\n让美食选择变得有趣又简单！',
+      title: '关于选餐侠',
+      content: '版本：1.0.0\n\n选餐侠是一款帮助你解决"今天吃什么"难题的小程序。\n\n让美食选择变得有趣又简单！',
       showCancel: false,
       confirmText: '知道了'
     });
@@ -270,7 +270,7 @@ Page({
   // 分享
   onShareAppMessage() {
     return {
-      title: '吃啥盲盒 - 解决你的选择困难症！',
+      title: '选餐侠 - 解决你的选择困难症！',
       path: '/pages/login/login'
     };
   }

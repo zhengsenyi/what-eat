@@ -274,7 +274,7 @@ Page({
   onShareAppMessage() {
     const { result } = this.data;
     return {
-      title: `我在吃啥盲盒抽到了「${result.name}」，你也来试试！`,
+      title: `我在选餐侠抽到了「${result.name}」，你也来试试！`,
       path: '/pages/login/login',
       imageUrl: result.image_url
     };
@@ -284,7 +284,7 @@ Page({
   onShareTimeline() {
     const { result } = this.data;
     return {
-      title: `吃啥盲盒推荐：${result.name}`,
+      title: `选餐侠推荐：${result.name}`,
       query: ''
     };
   }

@@ -174,7 +174,7 @@ Page({
   // 分享
   onShareAppMessage() {
     return {
-      title: '吃啥盲盒 - 我的抽选历史',
+      title: '选餐侠 - 我的抽选历史',
       path: '/pages/login/login'
     };
   }

@@ -4,13 +4,14 @@
     "pages/index/index",
     "pages/result/result",
     "pages/profile/profile",
-    "pages/history/history"
+    "pages/history/history",
+    "pages/agreement/agreement"
   ],
   "cloud": true,
   "window": {
     "backgroundTextStyle": "dark",
     "navigationBarBackgroundColor": "#f0fdf4",
-    "navigationBarTitleText": "吃啥盲盒",
+    "navigationBarTitleText": "选餐侠",
     "navigationBarTextStyle": "black",
     "backgroundColor": "#f0fdf4",
     "navigationStyle": "custom"

@@ -4,6 +4,7 @@ const { userApi } = require('../../utils/api');
 Page({
   data: {
     isLoading: false,
+    isWechatLoading: false,
     isRegisterMode: false,
     username: '',
     password: '',
@@ -225,6 +226,132 @@ Page({
     }
   },
 
+  // 微信授权登录
+  async onWechatLogin() {
+    if (this.data.isWechatLoading) return;
+
+    this.setData({ isWechatLoading: true });
+    wx.showLoading({ title: '微信登录中...', mask: true });
+
+    try {
+      // 1. 调用 wx.login 获取 code
+      const loginRes = await new Promise((resolve, reject) => {
+        wx.login({
+          success: resolve,
+          fail: reject
+        });
+      });
+
+      if (!loginRes.code) {
+        throw new Error('获取微信登录凭证失败');
+      }
+
+      console.log('获取到微信code:', loginRes.code);
+
+      // 2. 调用后端接口进行微信登录
+      const res = await userApi.wechatLogin(loginRes.code);
+      console.log('微信登录响应:', res);
+
+      // 检查响应格式
+      if (!res || res.code !== 0 || !res.data || !res.data.access_token) {
+        throw new Error(res?.msg || '微信登录响应无效');
+      }
+
+      // 3. 保存token
+      wx.setStorageSync('token', res.data.access_token);
+      console.log('Token已保存:', res.data.access_token);
+
+      // 4. 保存用户信息
+      const userData = res.data.user;
+      wx.setStorageSync('userInfo', {
+        id: userData.id,
+        openid: userData.openid,
+        nickName: userData.nickname || '微信用户',
+        avatarUrl: userData.avatar_url || '',
+        avatarText: '👤',
+        level: '黄金会员',
+        isWechatUser: true,
+        createdAt: userData.created_at
+      });
+
+      // 5. 获取完整用户信息（包含剩余次数等）
+      try {
+        const userInfoRes = await userApi.getUserInfo();
+        console.log('用户信息响应:', userInfoRes);
+        if (userInfoRes && userInfoRes.code === 0 && userInfoRes.data) {
+          const userInfo = userInfoRes.data;
+          wx.setStorageSync('userInfo', {
+            id: userInfo.id,
+            openid: userInfo.openid,
+            username: userInfo.username,
+            nickName: userInfo.nickname || userInfo.username || '微信用户',
+            avatarUrl: userInfo.avatar_url || '',
+            avatarText: '👤',
+            level: '黄金会员',
+            remainingTimes: userInfo.today_remaining_times,
+            isWechatUser: !!userInfo.openid,
+            createdAt: userInfo.created_at
+          });
+        }
+      } catch (e) {
+        console.error('获取用户信息失败', e);
+      }
+
+      wx.hideLoading();
+      this.setData({ isWechatLoading: false });
+
+      const isNewUser = res.data.is_new_user;
+      wx.showToast({
+        title: isNewUser ? '注册成功' : '登录成功',
+        icon: 'success',
+        duration: 1000
+      });
+
+      // 跳转到首页
+      setTimeout(() => {
+        console.log('执行页面跳转...');
+        wx.reLaunch({
+          url: '/pages/index/index',
+          success: () => {
+            console.log('跳转成功');
+          },
+          fail: (err) => {
+            console.error('跳转失败:', err);
+            wx.switchTab({
+              url: '/pages/index/index',
+              fail: (err2) => {
+                console.error('switchTab也失败:', err2);
+                wx.redirectTo({
+                  url: '/pages/index/index',
+                  fail: (err3) => {
+                    console.error('redirectTo也失败:', err3);
+                  }
+                });
+              }
+            });
+          }
+        });
+      }, 1000);
+
+    } catch (err) {
+      wx.hideLoading();
+      this.setData({ isWechatLoading: false });
+      console.error('微信登录失败', err);
+
+      let errorMsg = '微信登录失败，请稍后重试';
+      if (err && err.msg) {
+        errorMsg = err.msg;
+      } else if (err && err.message) {
+        errorMsg = err.message;
+      }
+
+      wx.showToast({
+        title: errorMsg,
+        icon: 'none'
+      });
+    }
+  },
+
   // 跳转到首页
   navigateToIndex() {
     console.log('navigateToIndex被调用');
@@ -241,21 +368,15 @@ Page({
 
   // 查看用户协议
   onViewAgreement() {
-    wx.showModal({
-      title: '用户协议',
-      content: '这里是用户协议的详细内容...',
-      showCancel: false,
-      confirmText: '我知道了'
+    wx.navigateTo({
+      url: '/pages/agreement/agreement?type=user'
     });
   },
 
   // 查看隐私政策
   onViewPrivacy() {
-    wx.showModal({
-      title: '隐私政策',
-      content: '这里是隐私政策的详细内容...',
-      showCancel: false,
-      confirmText: '我知道了'
+    wx.navigateTo({
+      url: '/pages/agreement/agreement?type=privacy'
     });
   }
 });
