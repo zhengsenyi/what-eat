@@ -1,11 +1,81 @@
 /* pages/agreement/agreement.wxss */
 .container {
   min-height: 100vh;
-  background: #f5f5f5;
+  background: linear-gradient(180deg, #f0fdf4 0%, #ecfccb 50%, #fefce8 100%);
+  display: flex;
+  flex-direction: column;
+}
+
+/* 自定义导航栏 */
+.custom-nav {
+  width: 100%;
+  background: transparent;
+  padding: 0 24rpx;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.nav-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 20rpx;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 32rpx;
+}
+
+.nav-left:active {
+  background: rgba(255, 255, 255, 1);
+}
+
+.back-icon {
+  font-size: 40rpx;
+  color: #374151;
+  font-weight: 300;
+  line-height: 1;
+  margin-right: 4rpx;
+}
+
+.back-text {
+  font-size: 28rpx;
+  color: #374151;
+  font-weight: 500;
+}
+
+.nav-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.title-text {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.nav-placeholder {
+  flex-shrink: 0;
+}
+
+/* 内容滚动区域 */
+.content-scroll {
+  flex: 1;
 }
 
 .content {
-  padding: 32rpx;
+  padding: 24rpx 32rpx;
 }
 
 .section {

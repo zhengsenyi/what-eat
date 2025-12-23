@@ -1,5 +1,22 @@
 <view class="container">
-  <view class="content">
+  <!-- 自定义导航栏 -->
+  <view class="custom-nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-content" style="height: {{navBarHeight}}px;">
+      <view class="nav-left" bindtap="goBack">
+        <text class="back-icon">‹</text>
+        <text class="back-text">返回</text>
+      </view>
+      <view class="nav-title">
+        <text class="title-text">{{title}}</text>
+      </view>
+      <view class="nav-right">
+        <view class="nav-placeholder" style="width: {{menuButtonWidth}}px;"></view>
+      </view>
+    </view>
+  </view>
+  
+  <scroll-view scroll-y class="content-scroll" style="height: calc(100vh - {{statusBarHeight + navBarHeight}}px);">
+    <view class="content">
     <!-- 用户协议 -->
     <block wx:if="{{type === 'user'}}">
       <view class="section">
@@ -211,5 +228,6 @@
         <text class="footer-text">选餐侠 版权所有</text>
       </view>
     </block>
-  </view>
+    </view>
+  </scroll-view>
 </view>

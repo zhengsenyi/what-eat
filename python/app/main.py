@@ -13,7 +13,9 @@ from app.openapi_i18n import apply_chinese_descriptions
 # 确保静态文件目录存在
 STATIC_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static")
 IMAGES_DIR = os.path.join(STATIC_DIR, "images")
+AVATARS_DIR = os.path.join(STATIC_DIR, "avatars")
 os.makedirs(IMAGES_DIR, exist_ok=True)
+os.makedirs(AVATARS_DIR, exist_ok=True)
 
 app = FastAPI(
     title=settings.APP_NAME,

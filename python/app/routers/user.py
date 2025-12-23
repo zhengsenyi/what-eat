@@ -1,6 +1,8 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, UploadFile, File
 from sqlalchemy.orm import Session
 from datetime import timedelta
+import os
+import uuid
 from app.database import get_db
 from app.schemas.user import UserCreate, UserLogin, WechatLogin, WechatUserInfo
 from app.schemas.response import success, error
@@ -12,6 +14,11 @@ from app.models.user import User
 from app.config import settings
 
 router = APIRouter(prefix="/api/user", tags=["用户"])
+
+# 头像上传目录（相对于 python 目录）
+AVATAR_UPLOAD_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "static", "avatars")
+# 确保目录存在
+os.makedirs(AVATAR_UPLOAD_DIR, exist_ok=True)
 
 
 @router.post("/register")
@@ -142,6 +149,55 @@ async def update_wechat_userinfo(
             "created_at": current_user.created_at.isoformat()
         }
     )
+
+
+@router.post("/avatar/upload")
+async def upload_avatar(
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    上传用户头像
+
+    上传图片文件作为用户头像，支持 jpg、jpeg、png、gif 格式。
+    需要在请求头中携带 Bearer Token。
+
+    返回:
+    - **avatar_url**: 头像访问URL
+    """
+    # 检查文件类型
+    allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+    if file.content_type not in allowed_types:
+        return error(msg="不支持的图片格式，请上传 jpg、png、gif 或 webp 格式的图片")
+    
+    # 生成唯一文件名
+    file_ext = file.filename.split('.')[-1] if '.' in file.filename else 'jpg'
+    unique_filename = f"{current_user.id}_{uuid.uuid4().hex[:8]}.{file_ext}"
+    file_path = os.path.join(AVATAR_UPLOAD_DIR, unique_filename)
+    
+    try:
+        # 保存文件
+        content = await file.read()
+        with open(file_path, 'wb') as f:
+            f.write(content)
+        
+        # 生成访问URL
+        avatar_url = f"/static/avatars/{unique_filename}"
+        
+        # 更新用户头像URL
+        current_user.avatar_url = avatar_url
+        db.commit()
+        db.refresh(current_user)
+        
+        return success(
+            msg="头像上传成功",
+            data={
+                "avatar_url": avatar_url
+            }
+        )
+    except Exception as e:
+        return error(msg=f"头像上传失败: {str(e)}")
 
 
 @router.get("/info")

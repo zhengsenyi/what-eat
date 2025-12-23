@@ -342,7 +342,14 @@ Page({
       } else {
         // 抽取失败，停止动画
         this.setData({ isShaking: false });
-        // 静默失败，不显示提示
+        // 显示错误提示
+        const errorMsg = (res && res.msg) ? res.msg : '抽取失败，请重试';
+        wx.showModal({
+          title: '提示',
+          content: errorMsg,
+          showCancel: false,
+          confirmText: '知道了'
+        });
         console.error('抽取失败:', res);
       }
 

@@ -96,6 +96,59 @@ const userApi = {
         avatar_url: avatarUrl
       }
     });
+  },
+
+  // 上传头像
+  uploadAvatar: (filePath) => {
+    return new Promise((resolve, reject) => {
+      const token = wx.getStorageSync('token');
+      
+      wx.uploadFile({
+        url: BASE_URL + '/api/user/avatar/upload',
+        filePath: filePath,
+        name: 'file',
+        header: {
+          'Authorization': `Bearer ${token}`
+        },
+        success: (res) => {
+          if (res.statusCode >= 200 && res.statusCode < 300) {
+            try {
+              const data = JSON.parse(res.data);
+              resolve(data);
+            } catch (e) {
+              reject(new Error('解析响应失败'));
+            }
+          } else if (res.statusCode === 401) {
+            wx.removeStorageSync('token');
+            wx.removeStorageSync('userInfo');
+            wx.showToast({
+              title: '登录已过期，请重新登录',
+              icon: 'none'
+            });
+            setTimeout(() => {
+              wx.reLaunch({
+                url: '/pages/login/login'
+              });
+            }, 1500);
+            reject(new Error('Unauthorized'));
+          } else {
+            try {
+              const data = JSON.parse(res.data);
+              reject(data);
+            } catch (e) {
+              reject(new Error('上传失败'));
+            }
+          }
+        },
+        fail: (err) => {
+          wx.showToast({
+            title: '网络请求失败',
+            icon: 'none'
+          });
+          reject(err);
+        }
+      });
+    });
   }
 };
 
