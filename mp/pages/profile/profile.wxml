@@ -146,7 +146,12 @@
       <view class="modal-body">
         <!-- 头像选择 -->
         <view class="avatar-section">
-          <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+          <!-- 使用 open-type="chooseAvatar" 获取微信头像 -->
+          <button
+            class="avatar-btn"
+            open-type="chooseAvatar"
+            bindchooseavatar="onChooseAvatar"
+          >
             <image
               class="avatar-preview"
               src="{{tempAvatarUrl || '../../static/logo.jpeg'}}"

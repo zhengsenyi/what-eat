@@ -175,44 +175,58 @@ Page({
     }
   },
 
-  // 选择头像回调（微信用户）
+  // 选择头像回调（微信用户）- 通过 open-type="chooseAvatar" 触发
   async onChooseAvatar(e) {
+    console.log('onChooseAvatar 被调用, e.detail:', e.detail);
     const { avatarUrl } = e.detail;
+    
+    if (!avatarUrl) {
+      console.error('未获取到头像URL');
+      return;
+    }
+    
     console.log('选择的头像临时路径:', avatarUrl);
     
     // 先显示临时头像
     this.setData({
       tempAvatarUrl: avatarUrl
     });
+  },
 
-    // 上传头像到服务器
-    wx.showLoading({ title: '上传中...', mask: true });
+  // 头像区域点击事件 - 使用 wx.chooseMedia 选择图片
+  async onAvatarTap() {
+    console.log('onAvatarTap 被调用');
+    
+    // 使用 wx.chooseMedia 选择图片
     try {
-      const res = await userApi.uploadAvatar(avatarUrl);
-      console.log('头像上传响应:', res);
-      
-      if (res && res.code === 0 && res.data && res.data.avatar_url) {
-        // 使用服务器返回的URL
-        const serverAvatarUrl = res.data.avatar_url;
-        this.setData({
-          tempAvatarUrl: serverAvatarUrl
+      const res = await new Promise((resolve, reject) => {
+        wx.chooseMedia({
+          count: 1,
+          mediaType: ['image'],
+          sourceType: ['album', 'camera'],
+          sizeType: ['compressed'],
+          success: resolve,
+          fail: reject
         });
-        console.log('头像上传成功，服务器URL:', serverAvatarUrl);
-      } else {
-        console.error('头像上传失败:', res);
-        wx.showToast({
-          title: res?.msg || '头像上传失败',
-          icon: 'none'
+      });
+      
+      if (res.tempFiles && res.tempFiles.length > 0) {
+        const avatarUrl = res.tempFiles[0].tempFilePath;
+        console.log('选择的头像:', avatarUrl);
+        
+        this.setData({
+          tempAvatarUrl: avatarUrl
         });
       }
     } catch (err) {
-      console.error('头像上传异常:', err);
-      wx.showToast({
-        title: '头像上传失败',
-        icon: 'none'
-      });
-    } finally {
-      wx.hideLoading();
+      console.error('选择图片失败:', err);
+      // 用户取消不提示
+      if (err.errMsg && !err.errMsg.includes('cancel')) {
+        wx.showToast({
+          title: '选择图片失败',
+          icon: 'none'
+        });
+      }
     }
   },
 

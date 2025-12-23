@@ -19,10 +19,12 @@ Page({
     username: '',
     password: '',
     confirmPassword: '',
-    // 微信用户信息授权相关
+    // 新用户信息填写弹窗
     showUserInfoModal: false,
     tempAvatarUrl: '',
-    tempNickname: ''
+    tempNickname: '',
+    // 临时保存的用户数据
+    pendingUserData: null
   },
 
   onLoad() {
@@ -105,7 +107,6 @@ Page({
       try {
         const userInfoRes = await userApi.getUserInfo();
         console.log('用户信息响应:', userInfoRes);
-        // 后端返回格式：{code: 0, data: {id, username, created_at, today_remaining_times}}
         if (userInfoRes && userInfoRes.code === 0 && userInfoRes.data) {
           const userInfo = userInfoRes.data;
           wx.setStorageSync('userInfo', {
@@ -128,39 +129,11 @@ Page({
       wx.showToast({
         title: '登录成功',
         icon: 'success',
-        duration: 1000,
-        success: () => {
-          console.log('Toast显示成功，准备跳转...');
-        }
+        duration: 1000
       });
 
-      // 直接跳转，不等待Toast完成
-      setTimeout(() => {
-        console.log('执行页面跳转...');
-        wx.reLaunch({
-          url: '/pages/index/index',
-          success: () => {
-            console.log('跳转成功');
-          },
-          fail: (err) => {
-            console.error('跳转失败:', err);
-            // 尝试使用switchTab
-            wx.switchTab({
-              url: '/pages/index/index',
-              fail: (err2) => {
-                console.error('switchTab也失败:', err2);
-                // 最后尝试redirectTo
-                wx.redirectTo({
-                  url: '/pages/index/index',
-                  fail: (err3) => {
-                    console.error('redirectTo也失败:', err3);
-                  }
-                });
-              }
-            });
-          }
-        });
-      }, 1000);
+      // 跳转到首页
+      this.navigateToIndex();
 
     } catch (err) {
       wx.hideLoading();
@@ -275,62 +248,52 @@ Page({
       wx.setStorageSync('token', res.data.access_token);
       console.log('Token已保存:', res.data.access_token);
 
-      // 4. 保存用户信息
       const userData = res.data.user;
       const isNewUser = res.data.is_new_user;
-      
-      wx.setStorageSync('userInfo', {
-        id: userData.id,
-        openid: userData.openid,
-        nickName: userData.nickname || '微信用户',
-        avatarUrl: userData.avatar_url || '',  // 存储原始URL
-        avatarText: '👤',
-        level: '黄金会员',
-        isWechatUser: true,
-        createdAt: userData.created_at
-      });
 
-      // 5. 获取完整用户信息（包含剩余次数等）
-      try {
-        const userInfoRes = await userApi.getUserInfo();
-        console.log('用户信息响应:', userInfoRes);
-        if (userInfoRes && userInfoRes.code === 0 && userInfoRes.data) {
-          const userInfo = userInfoRes.data;
-          wx.setStorageSync('userInfo', {
-            id: userInfo.id,
-            openid: userInfo.openid,
-            username: userInfo.username,
-            nickName: userInfo.nickname || userInfo.username || '微信用户',
-            avatarUrl: userInfo.avatar_url || '',  // 存储原始URL
-            avatarText: '👤',
-            level: '黄金会员',
-            remainingTimes: userInfo.today_remaining_times,
-            isWechatUser: !!userInfo.openid,
-            createdAt: userInfo.created_at
-          });
-        }
-      } catch (e) {
-        console.error('获取用户信息失败', e);
-      }
+      console.log('用户数据:', userData);
+      console.log('是否新用户:', isNewUser);
+      console.log('昵称:', userData.nickname, '类型:', typeof userData.nickname);
+      console.log('头像:', userData.avatar_url, '类型:', typeof userData.avatar_url);
 
       wx.hideLoading();
       this.setData({ isWechatLoading: false });
 
-      // 如果是新用户且没有昵称和头像，显示授权弹窗
-      if (isNewUser && (!userData.nickname || !userData.avatar_url)) {
+      // 4. 如果是新用户，显示信息填写弹窗让用户完善资料
+      // 注意：新用户的 nickname 和 avatar_url 通常为 null
+      const needShowModal = isNewUser === true;
+      console.log('是否需要显示弹窗:', needShowModal);
+      
+      if (needShowModal) {
+        console.log('新用户，显示信息填写弹窗');
         this.setData({
           showUserInfoModal: true,
           tempAvatarUrl: '',
-          tempNickname: ''
+          tempNickname: '',
+          pendingUserData: userData
         });
       } else {
+        // 5. 老用户或已有信息，直接保存并跳转
+        wx.setStorageSync('userInfo', {
+          id: userData.id,
+          openid: userData.openid,
+          nickName: userData.nickname || '微信用户',
+          avatarUrl: getFullAvatarUrl(userData.avatar_url) || '',
+          avatarText: '👤',
+          level: '黄金会员',
+          isWechatUser: true,
+          createdAt: userData.created_at
+        });
+
+        // 获取完整用户信息
+        await this.fetchFullUserInfo();
+
         wx.showToast({
-          title: isNewUser ? '注册成功' : '登录成功',
+          title: '登录成功',
           icon: 'success',
           duration: 1000
         });
 
-        // 跳转到首页
         this.navigateToIndex();
       }
 
@@ -353,44 +316,83 @@ Page({
     }
   },
 
-  // 选择头像回调
+  // 获取完整用户信息
+  async fetchFullUserInfo() {
+    try {
+      const userInfoRes = await userApi.getUserInfo();
+      console.log('用户信息响应:', userInfoRes);
+      if (userInfoRes && userInfoRes.code === 0 && userInfoRes.data) {
+        const userInfo = userInfoRes.data;
+        const localInfo = wx.getStorageSync('userInfo') || {};
+        wx.setStorageSync('userInfo', {
+          ...localInfo,
+          id: userInfo.id,
+          openid: userInfo.openid,
+          username: userInfo.username,
+          nickName: userInfo.nickname || localInfo.nickName || '微信用户',
+          avatarUrl: getFullAvatarUrl(userInfo.avatar_url) || localInfo.avatarUrl || '',
+          remainingTimes: userInfo.today_remaining_times,
+          isWechatUser: !!userInfo.openid,
+          createdAt: userInfo.created_at
+        });
+      }
+    } catch (e) {
+      console.error('获取用户信息失败', e);
+    }
+  },
+
+  // 选择头像回调 - 通过 open-type="chooseAvatar" 触发（真机有效）
   async onChooseAvatar(e) {
+    console.log('onChooseAvatar 被调用, e.detail:', e.detail);
     const { avatarUrl } = e.detail;
+    
+    if (!avatarUrl) {
+      console.error('未获取到头像URL');
+      return;
+    }
+    
     console.log('选择的头像临时路径:', avatarUrl);
     
-    // 先显示临时头像
+    // 显示选择的头像
     this.setData({
       tempAvatarUrl: avatarUrl
     });
+  },
 
-    // 上传头像到服务器
-    wx.showLoading({ title: '上传中...', mask: true });
+  // 头像区域点击事件 - 使用 wx.chooseMedia 选择图片
+  async onAvatarTap() {
+    console.log('onAvatarTap 被调用');
+    
+    // 使用 wx.chooseMedia 选择图片
     try {
-      const res = await userApi.uploadAvatar(avatarUrl);
-      console.log('头像上传响应:', res);
-      
-      if (res && res.code === 0 && res.data && res.data.avatar_url) {
-        // 使用服务器返回的URL
-        const serverAvatarUrl = res.data.avatar_url;
-        this.setData({
-          tempAvatarUrl: serverAvatarUrl
+      const res = await new Promise((resolve, reject) => {
+        wx.chooseMedia({
+          count: 1,
+          mediaType: ['image'],
+          sourceType: ['album', 'camera'],
+          sizeType: ['compressed'],
+          success: resolve,
+          fail: reject
         });
-        console.log('头像上传成功，服务器URL:', serverAvatarUrl);
-      } else {
-        console.error('头像上传失败:', res);
-        wx.showToast({
-          title: res?.msg || '头像上传失败',
-          icon: 'none'
+      });
+      
+      if (res.tempFiles && res.tempFiles.length > 0) {
+        const avatarUrl = res.tempFiles[0].tempFilePath;
+        console.log('选择的头像:', avatarUrl);
+        
+        this.setData({
+          tempAvatarUrl: avatarUrl
         });
       }
     } catch (err) {
-      console.error('头像上传异常:', err);
-      wx.showToast({
-        title: '头像上传失败',
-        icon: 'none'
-      });
-    } finally {
-      wx.hideLoading();
+      console.error('选择图片失败:', err);
+      // 用户取消不提示
+      if (err.errMsg && !err.errMsg.includes('cancel')) {
+        wx.showToast({
+          title: '选择图片失败',
+          icon: 'none'
+        });
+      }
     }
   },
 
@@ -403,9 +405,31 @@ Page({
     });
   },
 
+  // 昵称输入框失去焦点
+  onNicknameBlur(e) {
+    const nickname = e.detail.value;
+    console.log('昵称输入框失去焦点，值:', nickname);
+    if (nickname) {
+      this.setData({
+        tempNickname: nickname
+      });
+    }
+  },
+
+  // 昵称输入确认（按回车）
+  onNicknameConfirm(e) {
+    const nickname = e.detail.value;
+    console.log('昵称输入确认，值:', nickname);
+    if (nickname) {
+      this.setData({
+        tempNickname: nickname
+      });
+    }
+  },
+
   // 确认用户信息
   async onConfirmUserInfo() {
-    const { tempAvatarUrl, tempNickname } = this.data;
+    const { tempAvatarUrl, tempNickname, pendingUserData } = this.data;
     
     if (!tempAvatarUrl && !tempNickname) {
       wx.showToast({
@@ -418,55 +442,66 @@ Page({
     wx.showLoading({ title: '保存中...', mask: true });
 
     try {
-      // 如果头像是临时文件路径（以 http://tmp 或 wxfile:// 开头），需要先上传
-      let finalAvatarUrl = tempAvatarUrl;
-      if (tempAvatarUrl && (tempAvatarUrl.startsWith('http://tmp') || tempAvatarUrl.startsWith('wxfile://'))) {
-        console.log('检测到临时头像路径，开始上传...');
-        const uploadRes = await userApi.uploadAvatar(tempAvatarUrl);
-        if (uploadRes && uploadRes.code === 0 && uploadRes.data && uploadRes.data.avatar_url) {
-          finalAvatarUrl = uploadRes.data.avatar_url;
-          console.log('头像上传成功:', finalAvatarUrl);
-        } else {
-          throw new Error(uploadRes?.msg || '头像上传失败');
+      let serverAvatarUrl = '';
+
+      // 上传头像（如果有）
+      if (tempAvatarUrl) {
+        console.log('开始上传头像...');
+        try {
+          const uploadRes = await userApi.uploadAvatar(tempAvatarUrl);
+          if (uploadRes && uploadRes.code === 0 && uploadRes.data && uploadRes.data.avatar_url) {
+            serverAvatarUrl = uploadRes.data.avatar_url;
+            console.log('头像上传成功:', serverAvatarUrl);
+          }
+        } catch (uploadErr) {
+          console.error('头像上传失败:', uploadErr);
         }
       }
 
-      // 调用后端接口更新用户信息（昵称）
-      // 头像已经在上传时更新了，这里只需要更新昵称
+      // 更新昵称（如果有）
       if (tempNickname) {
-        const res = await userApi.updateWechatUserInfo(tempNickname, null);
-        console.log('更新昵称响应:', res);
-        if (res && res.code !== 0) {
-          throw new Error(res?.msg || '保存昵称失败');
+        try {
+          const updateRes = await userApi.updateWechatUserInfo(tempNickname, null);
+          console.log('更新昵称响应:', updateRes);
+        } catch (updateErr) {
+          console.error('更新昵称失败:', updateErr);
         }
       }
 
-      // 更新本地存储（存储原始URL）
-      const userInfo = wx.getStorageSync('userInfo') || {};
-      if (tempNickname) {
-        userInfo.nickName = tempNickname;
-      }
-      if (finalAvatarUrl) {
-        userInfo.avatarUrl = finalAvatarUrl;
-      }
-      wx.setStorageSync('userInfo', userInfo);
+      // 保存用户信息到本地
+      wx.setStorageSync('userInfo', {
+        id: pendingUserData?.id,
+        openid: pendingUserData?.openid,
+        nickName: tempNickname || '微信用户',
+        avatarUrl: getFullAvatarUrl(serverAvatarUrl) || '',
+        avatarText: '👤',
+        level: '黄金会员',
+        isWechatUser: true,
+        createdAt: pendingUserData?.created_at
+      });
+
+      // 获取完整用户信息
+      await this.fetchFullUserInfo();
 
       wx.hideLoading();
-      this.setData({ showUserInfoModal: false });
+      this.setData({ 
+        showUserInfoModal: false,
+        pendingUserData: null
+      });
 
       wx.showToast({
-        title: '设置成功',
+        title: '注册成功',
         icon: 'success',
         duration: 1000
       });
 
-      // 跳转到首页
       this.navigateToIndex();
+
     } catch (err) {
       wx.hideLoading();
-      console.error('更新用户信息失败', err);
+      console.error('保存用户信息失败', err);
       wx.showToast({
-        title: err.message || '保存失败，请稍后重试',
+        title: '保存失败，请稍后重试',
         icon: 'none'
       });
     }
@@ -474,12 +509,31 @@ Page({
 
   // 跳过用户信息设置
   onSkipUserInfo() {
-    this.setData({ showUserInfoModal: false });
+    const { pendingUserData } = this.data;
+    
+    // 使用默认信息保存
+    wx.setStorageSync('userInfo', {
+      id: pendingUserData?.id,
+      openid: pendingUserData?.openid,
+      nickName: '微信用户',
+      avatarUrl: '',
+      avatarText: '👤',
+      level: '黄金会员',
+      isWechatUser: true,
+      createdAt: pendingUserData?.created_at
+    });
+
+    this.setData({ 
+      showUserInfoModal: false,
+      pendingUserData: null
+    });
+
     wx.showToast({
-      title: '登录成功',
+      title: '注册成功',
       icon: 'success',
       duration: 1000
     });
+
     this.navigateToIndex();
   },
 

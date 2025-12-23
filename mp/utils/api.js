@@ -3,6 +3,21 @@
 // 备案完成后请改回域名: http://zhengsenyi.xyz:8000
 const BASE_URL = 'http://120.24.24.166:8000';
 
+// 处理认证失败，跳转到登录页
+const handleAuthError = (msg) => {
+  wx.removeStorageSync('token');
+  wx.removeStorageSync('userInfo');
+  wx.showToast({
+    title: msg || '登录已过期，请重新登录',
+    icon: 'none'
+  });
+  setTimeout(() => {
+    wx.reLaunch({
+      url: '/pages/login/login'
+    });
+  }, 1500);
+};
+
 // HTTP请求封装
 const request = (options) => {
   return new Promise((resolve, reject) => {
@@ -19,20 +34,16 @@ const request = (options) => {
       },
       success: (res) => {
         if (res.statusCode >= 200 && res.statusCode < 300) {
+          // 检查响应体中的 code 字段，401 表示认证失败（token无效或用户不存在）
+          if (res.data && res.data.code === 401) {
+            handleAuthError(res.data.msg);
+            reject(new Error(res.data.msg || 'Unauthorized'));
+            return;
+          }
           resolve(res.data);
         } else if (res.statusCode === 401) {
-          // Token过期或无效，清除登录状态
-          wx.removeStorageSync('token');
-          wx.removeStorageSync('userInfo');
-          wx.showToast({
-            title: '登录已过期，请重新登录',
-            icon: 'none'
-          });
-          setTimeout(() => {
-            wx.reLaunch({
-              url: '/pages/login/login'
-            });
-          }, 1500);
+          // HTTP 401 状态码
+          handleAuthError('登录已过期，请重新登录');
           reject(new Error('Unauthorized'));
         } else {
           reject(res.data);
@@ -114,22 +125,18 @@ const userApi = {
           if (res.statusCode >= 200 && res.statusCode < 300) {
             try {
               const data = JSON.parse(res.data);
+              // 检查响应体中的 code 字段
+              if (data && data.code === 401) {
+                handleAuthError(data.msg);
+                reject(new Error(data.msg || 'Unauthorized'));
+                return;
+              }
               resolve(data);
             } catch (e) {
               reject(new Error('解析响应失败'));
             }
           } else if (res.statusCode === 401) {
-            wx.removeStorageSync('token');
-            wx.removeStorageSync('userInfo');
-            wx.showToast({
-              title: '登录已过期，请重新登录',
-              icon: 'none'
-            });
-            setTimeout(() => {
-              wx.reLaunch({
-                url: '/pages/login/login'
-              });
-            }, 1500);
+            handleAuthError('登录已过期，请重新登录');
             reject(new Error('Unauthorized'));
           } else {
             try {

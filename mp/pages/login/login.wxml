@@ -101,51 +101,70 @@
     </view>
   </scroll-view>
 
-  <!-- 用户信息授权弹窗 -->
+  <!-- 新用户信息授权弹窗 -->
   <view class="userinfo-modal" wx:if="{{showUserInfoModal}}">
-    <view class="modal-mask" bindtap="onSkipUserInfo"></view>
+    <view class="modal-mask"></view>
     <view class="modal-content">
       <view class="modal-header">
-        <text class="modal-title">完善个人信息</text>
-        <text class="modal-subtitle">设置头像和昵称，让大家认识你</text>
+        <text class="modal-title">获取用户信息</text>
+        <text class="modal-subtitle">授权后可获取您的微信头像和昵称</text>
       </view>
       
       <view class="modal-body">
-        <!-- 头像选择 -->
-        <view class="avatar-section">
-          <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
-            <image
-              class="avatar-preview"
-              src="{{tempAvatarUrl || '../../static/logo.jpeg'}}"
-              mode="aspectFill"
-            />
-            <view class="avatar-edit-icon">
-              <text class="edit-icon-text">📷</text>
+        <!-- 头像和昵称获取区域 -->
+        <view class="userinfo-form">
+          <!-- 头像选择按钮 -->
+          <view class="avatar-section">
+            <!-- 使用 open-type="chooseAvatar" 获取微信头像 -->
+            <button
+              class="avatar-btn"
+              open-type="chooseAvatar"
+              bindchooseavatar="onChooseAvatar"
+            >
+              <image
+                wx:if="{{tempAvatarUrl}}"
+                class="avatar-preview"
+                src="{{tempAvatarUrl}}"
+                mode="aspectFill"
+              />
+              <view wx:else class="avatar-placeholder">
+                <text class="avatar-placeholder-text">👤</text>
+              </view>
+              <view class="avatar-edit-icon">
+                <text class="edit-icon-text">📷</text>
+              </view>
+            </button>
+            <text class="avatar-hint">点击选择头像</text>
+          </view>
+          
+          <!-- 昵称输入 -->
+          <view class="nickname-section">
+            <view class="nickname-input-wrapper">
+              <text class="nickname-label">昵称</text>
+              <input
+                class="nickname-input"
+                type="nickname"
+                placeholder="请输入昵称"
+                value="{{tempNickname}}"
+                bindinput="onNicknameInput"
+                bindblur="onNicknameBlur"
+                bindconfirm="onNicknameConfirm"
+              />
             </view>
-          </button>
-          <text class="avatar-hint">点击选择头像</text>
+          </view>
         </view>
         
-        <!-- 昵称输入 -->
-        <view class="nickname-section">
-          <view class="nickname-input-wrapper">
-            <text class="nickname-label">昵称</text>
-            <input
-              class="nickname-input"
-              type="nickname"
-              placeholder="请输入昵称"
-              value="{{tempNickname}}"
-              bindinput="onNicknameInput"
-              maxlength="20"
-            />
-          </view>
+        <!-- 提示信息 -->
+        <view class="auth-tips">
+          <text class="tips-text">💡 真机上点击头像和昵称可自动获取微信信息</text>
         </view>
       </view>
       
       <view class="modal-footer">
-        <button class="btn-skip" bindtap="onSkipUserInfo">跳过</button>
-        <button class="btn-confirm" bindtap="onConfirmUserInfo">确认</button>
+        <button class="btn-skip" bindtap="onSkipUserInfo">暂不设置</button>
+        <button class="btn-confirm" bindtap="onConfirmUserInfo">完成注册</button>
       </view>
     </view>
   </view>
+
 </view>
