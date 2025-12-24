@@ -1,7 +1,28 @@
 {
   "description": "Eat What Blind Box Mini Program",
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      {
+        "type": "file",
+        "value": ".gitignore"
+      },
+      {
+        "type": "file",
+        "value": "README.md"
+      },
+      {
+        "type": "file",
+        "value": "*.md"
+      },
+      {
+        "type": "folder",
+        "value": ".git"
+      },
+      {
+        "type": "file",
+        "value": "吃啥盲盒小程序原型.html"
+      }
+    ],
     "include": []
   },
   "setting": {
@@ -17,10 +38,10 @@
     "autoAudits": false,
     "showShadowRootInWxmlPanel": true,
     "scopeDataCheck": false,
-    "uglifyFileName": false,
+    "uglifyFileName": true,
     "checkInvalidSitemap": true,
     "checkSiteMap": true,
-    "uploadWithSourceMap": true,
+    "uploadWithSourceMap": false,
     "compileHotReLoad": false,
     "useMultiFrameRuntime": true,
     "useApiHook": true,

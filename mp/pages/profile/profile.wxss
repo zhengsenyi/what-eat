@@ -51,10 +51,11 @@
 /* 内容区域 */
 .content-scroll {
   flex: 1;
-  padding: 16rpx 32rpx;
+  padding: 32rpx 32rpx;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   overflow: hidden;
 }
 
@@ -63,10 +64,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20rpx 24rpx;
+  padding: 32rpx 32rpx;
   background: linear-gradient(135deg, #ecfccb 0%, #d9f99d 100%);
   border-radius: 24rpx;
-  margin-bottom: 16rpx;
   box-shadow: 0 8rpx 24rpx rgba(132, 204, 22, 0.15);
   flex-shrink: 0;
 }
@@ -183,10 +183,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20rpx 24rpx;
+  padding: 32rpx 32rpx;
   background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
   border-radius: 24rpx;
-  margin-bottom: 16rpx;
   box-shadow: 0 8rpx 24rpx rgba(251, 191, 36, 0.2);
   flex-shrink: 0;
 }
@@ -238,7 +237,6 @@
 
 /* 菜单区块 */
 .menu-section {
-  margin-bottom: 12rpx;
   flex-shrink: 0;
 }
 
@@ -246,7 +244,7 @@
   font-size: 24rpx;
   font-weight: 600;
   color: #6b7280;
-  margin-bottom: 8rpx;
+  margin-bottom: 12rpx;
   padding-left: 8rpx;
   display: block;
 }
@@ -261,7 +259,7 @@
 .menu-item {
   display: flex;
   align-items: center;
-  padding: 16rpx 20rpx;
+  padding: 28rpx 28rpx;
 }
 
 .menu-item:not(:last-child) {
@@ -327,7 +325,6 @@
 
 /* 退出登录 */
 .logout-section {
-  padding: 12rpx 0 16rpx;
   flex-shrink: 0;
 }
 
@@ -365,7 +362,6 @@
 .footer {
   text-align: center;
   padding: 16rpx 0 8rpx;
-  margin-top: auto;
   flex-shrink: 0;
 }
 
@@ -383,7 +379,7 @@
 
 /* 底部安全区域 */
 .safe-bottom {
-  height: 20rpx;
+  height: 16rpx;
   padding-bottom: constant(safe-area-inset-bottom);
   padding-bottom: env(safe-area-inset-bottom);
   flex-shrink: 0;

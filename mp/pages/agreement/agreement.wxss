@@ -4,6 +4,7 @@
   background: linear-gradient(180deg, #f0fdf4 0%, #ecfccb 50%, #fefce8 100%);
   display: flex;
   flex-direction: column;
+  padding: 0 !important;
 }
 
 /* 自定义导航栏 */
@@ -19,41 +20,42 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
 }
 
 .nav-left {
   display: flex;
   align-items: center;
-  padding: 12rpx 20rpx;
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 32rpx;
 }
 
-.nav-left:active {
-  background: rgba(255, 255, 255, 1);
+.back-btn {
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.back-btn:active {
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .back-icon {
-  font-size: 40rpx;
+  font-size: 48rpx;
   color: #374151;
   font-weight: 300;
-  line-height: 1;
-  margin-right: 4rpx;
+  margin-top: -4rpx;
 }
 
-.back-text {
-  font-size: 28rpx;
-  color: #374151;
-  font-weight: 500;
-}
-
-.nav-title {
+.nav-center {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
 }
 
-.title-text {
+.page-title {
   font-size: 34rpx;
   font-weight: 600;
   color: #1f2937;

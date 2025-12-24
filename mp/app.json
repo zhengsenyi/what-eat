@@ -17,5 +17,7 @@
     "navigationStyle": "custom"
   },
   "sitemapLocation": "sitemap.json",
-  "lazyCodeLoading": "requiredComponents"
+  "lazyCodeLoading": "requiredComponents",
+  "initialRenderingCache": "static",
+  "componentFramework": "glass-easel"
 }

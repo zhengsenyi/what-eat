@@ -14,11 +14,11 @@
             <image class="logo-image" src="../../static/logo.jpeg" mode="aspectFill" />
           </view>
           <text class="title">选餐侠</text>
-          <text class="subtitle">{{isRegisterMode ? '创建新账号' : '解决你的选择困难症'}}</text>
+          <text class="subtitle">解决你的选择困难症</text>
         </view>
         
-        <!-- 微信登录按钮（优先展示） -->
-        <view class="wechat-login" wx:if="{{!isRegisterMode}}">
+        <!-- 微信登录按钮 -->
+        <view class="wechat-login">
           <button
             class="btn-wechat"
             bindtap="onWechatLogin"
@@ -28,66 +28,6 @@
             <image class="wechat-icon" src="../../static/icons/wechat.png" mode="aspectFit" />
             <text class="btn-wechat-text">{{isWechatLoading ? '登录中...' : '微信一键登录'}}</text>
           </button>
-        </view>
-        
-        <!-- 分隔线 -->
-        <view class="divider" wx:if="{{!isRegisterMode}}">
-          <view class="divider-line"></view>
-          <text class="divider-text">或使用账号登录</text>
-          <view class="divider-line"></view>
-        </view>
-        
-        <!-- 输入表单 -->
-        <view class="form-section">
-          <view class="input-group">
-            <text class="input-icon">👤</text>
-            <input
-              class="input-field"
-              type="text"
-              placeholder="用户名（至少3个字符）"
-              value="{{username}}"
-              bindinput="onUsernameInput"
-              maxlength="50"
-            />
-          </view>
-          <view class="input-group">
-            <text class="input-icon">🔒</text>
-            <input
-              class="input-field"
-              type="password"
-              placeholder="密码（至少6个字符）"
-              value="{{password}}"
-              bindinput="onPasswordInput"
-              maxlength="100"
-            />
-          </view>
-          <view class="input-group" wx:if="{{isRegisterMode}}">
-            <text class="input-icon">🔒</text>
-            <input
-              class="input-field"
-              type="password"
-              placeholder="确认密码"
-              value="{{confirmPassword}}"
-              bindinput="onConfirmPasswordInput"
-              maxlength="100"
-            />
-          </view>
-        </view>
-        
-        <!-- 登录/注册按钮 -->
-        <view class="actions">
-          <button
-            class="btn-primary"
-            bindtap="{{isRegisterMode ? 'onRegister' : 'onLogin'}}"
-            disabled="{{isLoading}}"
-            hover-class="btn-primary-hover"
-          >
-            <text class="btn-text">{{isLoading ? '请稍候...' : (isRegisterMode ? '注册' : '登录')}}</text>
-          </button>
-          
-          <view class="switch-mode" bindtap="toggleMode">
-            <text class="switch-text">{{isRegisterMode ? '已有账号？去登录' : '没有账号？去注册'}}</text>
-          </view>
         </view>
         
         <!-- 协议提示 -->

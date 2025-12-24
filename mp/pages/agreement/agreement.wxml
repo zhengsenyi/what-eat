@@ -2,12 +2,13 @@
   <!-- 自定义导航栏 -->
   <view class="custom-nav" style="padding-top: {{statusBarHeight}}px;">
     <view class="nav-content" style="height: {{navBarHeight}}px;">
-      <view class="nav-left" bindtap="goBack">
-        <text class="back-icon">‹</text>
-        <text class="back-text">返回</text>
+      <view class="nav-left">
+        <view class="back-btn" bindtap="goBack">
+          <text class="back-icon">‹</text>
+        </view>
       </view>
-      <view class="nav-title">
-        <text class="title-text">{{title}}</text>
+      <view class="nav-center">
+        <text class="page-title">{{title}}</text>
       </view>
       <view class="nav-right">
         <view class="nav-placeholder" style="width: {{menuButtonWidth}}px;"></view>

@@ -117,7 +117,7 @@
 /* 微信登录按钮 */
 .wechat-login {
   width: 100%;
-  margin-bottom: 24rpx;
+  margin-bottom: 48rpx;
 }
 
 .btn-wechat {
@@ -159,122 +159,6 @@
   color: white;
   font-size: 30rpx;
   font-weight: 600;
-}
-
-/* 分隔线 */
-.divider {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  margin: 24rpx 0;
-}
-
-.divider-line {
-  flex: 1;
-  height: 1rpx;
-  background: #d1d5db;
-}
-
-.divider-text {
-  font-size: 22rpx;
-  color: #9ca3af;
-  padding: 0 20rpx;
-  white-space: nowrap;
-}
-
-/* 表单区域 */
-.form-section {
-  width: 100%;
-  margin-bottom: 24rpx;
-}
-
-.input-group {
-  display: flex;
-  align-items: center;
-  background: white;
-  border: 2rpx solid #e5e7eb;
-  border-radius: 20rpx;
-  padding: 0 20rpx;
-  margin-bottom: 16rpx;
-  transition: all 0.3s ease;
-}
-
-.input-group:focus-within {
-  border-color: #84cc16;
-  box-shadow: 0 0 0 4rpx rgba(132, 204, 22, 0.1);
-}
-
-.input-icon {
-  font-size: 32rpx;
-  margin-right: 12rpx;
-}
-
-.input-field {
-  flex: 1;
-  height: 84rpx;
-  font-size: 28rpx;
-  color: #1f2937;
-}
-
-.input-field::placeholder {
-  color: #9ca3af;
-  font-size: 26rpx;
-}
-
-/* 登录按钮区域 */
-.actions {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 16rpx;
-  margin-bottom: 32rpx;
-}
-
-.btn-primary {
-  width: 100%;
-  height: 88rpx;
-  background: linear-gradient(135deg, #a3e635 0%, #84cc16 50%, #65a30d 100%);
-  color: white;
-  font-weight: 600;
-  border-radius: 44rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 30rpx;
-  border: none;
-  box-shadow: 0 8rpx 24rpx rgba(132, 204, 22, 0.35);
-  transition: all 0.3s ease;
-}
-
-.btn-primary::after {
-  border: none;
-}
-
-.btn-primary-hover {
-  transform: scale(0.97);
-  box-shadow: 0 6rpx 16rpx rgba(132, 204, 22, 0.3);
-}
-
-.btn-primary[disabled] {
-  opacity: 0.6;
-}
-
-.btn-text {
-  color: white;
-  font-size: 30rpx;
-  font-weight: 600;
-}
-
-.switch-mode {
-  text-align: center;
-  padding: 12rpx 0;
-}
-
-.switch-text {
-  font-size: 26rpx;
-  color: #84cc16;
-  font-weight: 500;
 }
 
 /* 协议提示 */

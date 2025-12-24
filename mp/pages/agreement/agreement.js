@@ -5,7 +5,9 @@ Page({
     title: '用户协议',
     statusBarHeight: 20,
     navBarHeight: 44,
-    menuButtonWidth: 87
+    menuButtonWidth: 87,
+    menuButtonTop: 0,
+    menuButtonHeight: 32
   },
 
   onLoad(options) {
@@ -16,7 +18,9 @@ Page({
     this.setData({
       statusBarHeight: systemInfo.statusBarHeight,
       navBarHeight: menuButton.height + (menuButton.top - systemInfo.statusBarHeight) * 2,
-      menuButtonWidth: systemInfo.windowWidth - menuButton.left
+      menuButtonWidth: systemInfo.windowWidth - menuButton.left,
+      menuButtonTop: menuButton.top,
+      menuButtonHeight: menuButton.height
     });
     
     const type = options.type || 'user';

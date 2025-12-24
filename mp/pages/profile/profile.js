@@ -381,7 +381,7 @@ Page({
   goToFeedback() {
     wx.showModal({
       title: '意见反馈',
-      content: '如有问题或建议，请联系我们：\nfeedback@chisha.com',
+      content: '如有问题或建议，请联系我们：\n2442827802a@gmail.com',
       showCancel: false,
       confirmText: '知道了'
     });

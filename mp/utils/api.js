@@ -2,6 +2,7 @@
 // 由于域名未完成ICP备案，暂时使用IP地址
 // 备案完成后请改回域名: http://zhengsenyi.xyz:8000
 const BASE_URL = 'http://120.24.24.166:8000';
+// const BASE_URL = 'https://zhengsenyi.xyz';
 
 // 处理认证失败，跳转到登录页
 const handleAuthError = (msg) => {

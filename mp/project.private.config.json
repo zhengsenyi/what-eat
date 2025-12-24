@@ -1,9 +1,21 @@
 {
-  "libVersion": "2.20.3",
+  "libVersion": "3.13.0",
   "projectname": "what-eat-mp",
-  "condition": {},
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "pages/agreement/agreement",
+          "pathName": "pages/agreement/agreement",
+          "query": "type=user",
+          "scene": null,
+          "launchMode": "default"
+        }
+      ]
+    }
+  },
   "setting": {
-    "urlCheck": false,
+    "urlCheck": true,
     "coverView": true,
     "lazyloadPlaceholderEnable": false,
     "skylineRenderEnable": false,
